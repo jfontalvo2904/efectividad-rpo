@@ -1,0 +1,11 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" opened class="example-sidenav"
+                 [fixedInViewport]="true">
+                 <p>halsdfjlasdjflasdjflsdaj</p>
+    </mat-sidenav>
+
+    <mat-sidenav-content >
+      <p><button mat-button (click)="sidenav.toggle()">Toggle</button></p>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

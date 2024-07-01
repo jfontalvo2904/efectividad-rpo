@@ -1,11 +1,11 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" opened class="example-sidenav"
+    <mat-sidenav #sidenav mode="side" autoFocus="true" (keydown.escape)="sidenav.close()" opened class="example-sidenav"
                  [fixedInViewport]="true">
                  <p>halsdfjlasdjflasdjflsdaj</p>
     </mat-sidenav>
 
-    <mat-sidenav-content >
-      <p><button mat-button (click)="sidenav.toggle()">Toggle</button></p>
+    <mat-sidenav-content>
+      <button class="bg-mp-orange mt-3" mat-raised-button (click)="sidenav.toggle()">Menu</button>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>

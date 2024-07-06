@@ -5,7 +5,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <button class="bg-mp-orange mt-3" mat-raised-button (click)="sidenav.toggle()">Menu</button>
+      <shared-logo (click)="sidenav.toggle()"/>
       <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>

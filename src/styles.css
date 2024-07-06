@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-    @apply bg-mp-light-blue;
+    /*@apply bg-mp-light-blue;*/
     margin: 0; 
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }

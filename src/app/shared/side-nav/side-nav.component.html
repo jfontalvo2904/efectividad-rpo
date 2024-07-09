@@ -1,11 +1,15 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" autoFocus="true" (keydown.escape)="sidenav.close()" opened class="example-sidenav"
-                 [fixedInViewport]="true">
-                 <p>halsdfjlasdjflasdjflsdaj</p>
-    </mat-sidenav>
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    class="example-sidenav"
+    [fixedInViewport]="true"
+  >
+    <p>halsdfjlasdjflasdjflsdaj</p>
+  </mat-sidenav>
 
-    <mat-sidenav-content>
-      <shared-logo (click)="sidenav.toggle()"/>
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
+  <mat-sidenav-content>
+    <shared-logo (click)="sidenav.toggle()" class="pl-1" />
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>

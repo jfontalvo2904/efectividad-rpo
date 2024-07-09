@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import {MatMenuModule} from '@angular/material/menu';
 
 @Component({
-  selector: 'app-drop-down-user-mneu',
+  selector: 'drop-down-user-mneu',
   standalone: true,
-  imports: [],
+  imports: [MatMenuModule],
   templateUrl: './drop-down-user-mneu.component.html',
   styleUrl: './drop-down-user-mneu.component.css'
 })

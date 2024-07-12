@@ -1,0 +1,123 @@
+<div class="flex justify-center p-4">
+    <img id="image-side" src="../../../../assets/images/side-nueva-vacante-logo.png" alt="ManPowerGroupImage" >
+    
+    <section class="w-full pl-4">
+        <h1 class="text-4xl font-extrabold dark:text-white mb-6">Nueva vacante</h1>
+        <div class="mb-4">
+            <button mat-raised-button
+                matTooltip="Añadir encargados"
+                matTooltipPosition="above"
+                aria-label="Button that displays a tooltip when focused or hovered over">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        
+        <div class="flex gap-4">
+            <div class="flex flex-col">
+                <mat-form-field>
+                    <mat-label>Periodo de gestión mes/año</mat-label>
+                    <input matInput [matDatepicker]="dp" [formControl]="date">
+                    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp
+                                    startView="multi-year"
+                                    (monthSelected)="setMonthAndYear($event, dp)"
+                                    panelClass="example-month-picker">
+                    </mat-datepicker>
+                </mat-form-field>
+    
+                <mat-form-field >
+                    <mat-label>Cargo</mat-label>
+                    <input matInput placeholder="Ex. Pizza" value="">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Sector</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="sector">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Fecha de asignación</mat-label>
+                    <input matInput [matDatepicker]="pickerAssignment">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerAssignment"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerAssignment></mat-datepicker>
+                </mat-form-field>
+        
+                <mat-form-field>
+                    <mat-label>Lider de cuenta</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="lider-cuenta">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Tipo vacante</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="tipo-vacante">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                
+                <div class="flex justify-start mt-8 gap-4">
+                    <button mat-fab extended color="tertiary">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar
+                    </button>
+                    <button mat-fab extended color="tertiary">
+                        <mat-icon>save</mat-icon>
+                        Aceptar
+                    </button>
+                </div>
+            
+            </div>
+    
+            <div class="flex flex-col">
+    
+                <mat-form-field>
+                    <mat-label>Nombre encargado</mat-label>
+                    <input matInput placeholder="Ex. Pizza" value="">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Nombre de la vacante</mat-label>
+                    <input matInput placeholder="Ex. Pizza" value="">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Cliente</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="cliente">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Fecha de asignación</mat-label>
+                    <input matInput [matDatepicker]="pickerLimitClosing">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerLimitClosing"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerLimitClosing></mat-datepicker>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label># de posiciones</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="posiciones">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            
+        
+            </div>
+        </div>
+    </section>
+    
+</div>
+

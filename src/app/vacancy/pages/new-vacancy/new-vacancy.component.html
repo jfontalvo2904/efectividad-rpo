@@ -1,0 +1,124 @@
+<div class="flex justify-center p-4">
+    <div class="flex flex-col mt-4">
+
+        <section class="flex gap-2">
+    
+            <mat-form-field>
+                <mat-label>Periodo de gestión mes/año</mat-label>
+                <input matInput [matDatepicker]="dp" [formControl]="date">
+                <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                <mat-datepicker #dp
+                                startView="multi-year"
+                                (monthSelected)="setMonthAndYear($event, dp)"
+                                panelClass="example-month-picker">
+                </mat-datepicker>
+            </mat-form-field>
+    
+            <mat-form-field>
+                <mat-label>Nombre encargado</mat-label>
+                <input matInput placeholder="Ex. Pizza" value="">
+            </mat-form-field>
+    
+            <mat-form-field >
+                <mat-label>Cargo</mat-label>
+                <input matInput placeholder="Ex. Pizza" value="">
+            </mat-form-field>
+              
+        </section>
+    
+        <section class="flex gap-2 flex-wrap">
+            <mat-form-field>
+                <mat-label>Nombre de la vacante</mat-label>
+                <input matInput placeholder="Ex. Pizza" value="">
+            </mat-form-field>
+            
+            <mat-form-field>
+                <mat-label>Sector</mat-label>
+                <mat-select [(ngModel)]="selectedValue" name="sector">
+                    @for (food of foods; track food) {
+                      <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field>
+                <mat-label>Cliente</mat-label>
+                <mat-select [(ngModel)]="selectedValue" name="cliente">
+                    @for (food of foods; track food) {
+                      <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+    
+            <mat-form-field>
+                <mat-label>Fecha de asignación</mat-label>
+                <input matInput [matDatepicker]="pickerAssignment">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerAssignment"></mat-datepicker-toggle>
+                <mat-datepicker #pickerAssignment></mat-datepicker>
+            </mat-form-field>
+    
+            <mat-form-field>
+                <mat-label>Fecha de asignación</mat-label>
+                <input matInput [matDatepicker]="pickerLimitClosing">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerLimitClosing"></mat-datepicker-toggle>
+                <mat-datepicker #pickerLimitClosing></mat-datepicker>
+            </mat-form-field>
+     
+        </section>
+    
+        <section class="flex">
+            <mat-form-field>
+                <mat-label>Lider de cuenta</mat-label>
+                <mat-select [(ngModel)]="selectedValue" name="lider-cuenta">
+                    @for (food of foods; track food) {
+                      <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </section>
+    
+        <section class="flex justify-between pr-4">
+            <div class="flex gap-2">
+                <mat-form-field>
+                    <mat-label># de posiciones</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="posiciones">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Tipo vacante</mat-label>
+                    <mat-select [(ngModel)]="selectedValue" name="tipo-vacante">
+                        @for (food of foods; track food) {
+                          <mat-option [value]="food.value">{{food.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            
+            <button mat-fab extended color="primary">
+                <mat-icon>add</mat-icon>
+                <span>Añadir</span>
+                <span class="block">Encargados</span>
+            </button>
+
+            
+        </section>
+
+        <section class="flex justify-end mt-8 gap-4">
+            <button mat-fab extended color="primary">
+                <mat-icon>add</mat-icon>
+                <span>Añadir</span>
+                <span class="block">Cancelar</span>
+            </button>
+            <button mat-fab extended color="primary">
+                <mat-icon>add</mat-icon>
+                <span>Añadir</span>
+                <span class="block">Aceptar</span>
+            </button>
+        </section>
+    
+    </div>
+</div>

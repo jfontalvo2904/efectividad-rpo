@@ -9,7 +9,11 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <shared-logo (click)="sidenav.toggle()" class="pl-1" />
+    <div class="flex justify-between mt-2">
+      <shared-logo (click)="sidenav.toggle()" class="pl-1"/>
+      <shared-header></shared-header>
+    </div>
+    
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

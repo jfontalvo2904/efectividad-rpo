@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SideNavComponent } from './shared/side-nav/side-nav.component';
 import { HeaderComponent } from './shared/components/header/header.component';
+import SideNavItem from './shared/interfaces/SideNavItem.interface';
 
 @Component({
   selector: 'app-root',
@@ -14,4 +15,12 @@ import { HeaderComponent } from './shared/components/header/header.component';
 })
 export class AppComponent {
   title = 'efectividad-rpo';
+
+  sideNavItems:SideNavItem[] = [
+    {
+      description : 'Agregar vacante',
+      icon : 'assignment',
+      route : '/nueva-vacante-v2'
+    }
+  ]
 }

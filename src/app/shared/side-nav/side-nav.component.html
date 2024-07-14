@@ -3,9 +3,26 @@
     #sidenav
     mode="side"
     class="example-sidenav"
-    [fixedInViewport]="true"
-  >
-    <p>halsdfjlasdjflasdjflsdaj</p>
+    [fixedInViewport]="true">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <ul class="space-y-2 font-medium">
+        @for (item of items; track $index) {
+          <li>
+            <a [routerLink]="[item.route]" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               
+              @if(item.icon) {
+                <mat-icon class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" 
+                aria-hidden="false" 
+                aria-label="Example home icon" 
+                [fontIcon]="item.icon"/>
+              }
+              <span class="ms-3">{{item.description}}</span>
+            </a>
+         </li>
+        }
+             
+      </ul>
+   </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -15,5 +32,6 @@
     </div>
     
     <router-outlet></router-outlet>
+
   </mat-sidenav-content>
 </mat-sidenav-container>

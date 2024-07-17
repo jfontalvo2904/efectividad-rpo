@@ -18,9 +18,19 @@ export class AppComponent {
 
   sideNavItems:SideNavItem[] = [
     {
-      description : 'Agregar vacante',
+      description : 'Agregar vacante 1',
+      icon : 'assignment',
+      route : '/nueva-vacante'
+    },
+    {
+      description : 'Agregar vacante 2',
       icon : 'assignment',
       route : '/nueva-vacante-v2'
+    },
+    {
+      description:'Clientes',
+      icon : 'account_box',
+      route: '/clientes'
     }
   ]
 }

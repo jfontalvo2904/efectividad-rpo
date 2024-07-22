@@ -12,6 +12,11 @@ export const routes : Route[] = [
         loadComponent : () => import('./pages/all-clients/all-clients.component').then( c => c.AllClientsComponent)
     },
     {
+        path : 'detail/:id',
+        loadComponent : () => import('./pages/client-detail/client-detail.component').then( c => c.ClientDetailComponent)
+
+    },
+    {
         path : '**',
         component : NotFoundComponent
     }

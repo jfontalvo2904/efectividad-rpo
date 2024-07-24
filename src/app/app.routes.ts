@@ -16,17 +16,13 @@ export const routes: Routes = [
         component: LoginComponent
     },
     {
-        path : 'nueva-vacante',
-        component : NewVacancyComponent
-    },
-    {
-        path : 'nueva-vacante-v2',
-        component : NewVacancyV2Component
-    },
-    {
-        path: 'clientes',
-        loadChildren : ()=> import('./clients/clients.routes').then( r => r.routes)
+        path: 'vacancy',
+        loadChildren : ()=> import('./vacancy/vacancy.routes').then( r => r.routes)
 
+    },
+    {
+        path: 'clients',
+        loadChildren : ()=> import('./clients/clients.routes').then( r => r.routes)
     },
     {
         path : '**',

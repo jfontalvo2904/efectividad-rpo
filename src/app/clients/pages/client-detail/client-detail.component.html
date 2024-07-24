@@ -1,3 +1,9 @@
 <div>
-    <p>Esta será la pagina para mostrar los detalles de los clientes</p>
+    <p>El id del cliente es {{clientId}}</p>
+    <p>Los datos del cliente son :</p>
+    <div>
+        <pre>
+           {{client | json}}
+        </pre>
+    </div>
 </div>

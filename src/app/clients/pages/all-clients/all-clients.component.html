@@ -1,14 +1,18 @@
 
 <div class="m-4">
   <h1 class="text-4xl font-extrabold dark:text-white mb-6">Clientes</h1>
-  <shared-custom-table 
-  [dataSource]="data" 
-  [colums]="displayedColumns" 
-  [mapColum]="mapColum"
-  [withPaginator]="true" 
-  [withSort]="true" 
-  [withFilter]="true"
-  [withActions]="true"
-  [actionsItems]="actionsItems"
-  (actionEvent)="handleAction($event)"/>
+  @if(clients) {
+    <shared-custom-table 
+    [dataSource]="clients" 
+    [colums]="displayedColumns" 
+    [mapColum]="mapColum"
+    [withPaginator]="true" 
+    [withSort]="true" 
+    [withFilter]="true"
+    [withActions]="true"
+    [actionsItems]="actionsItems"
+    (actionEvent)="handleAction($event)"/>
+
+  }
+  
 </div>

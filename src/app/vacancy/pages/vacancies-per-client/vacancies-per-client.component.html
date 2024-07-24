@@ -1,0 +1,16 @@
+<div class="m-4">
+    <h1 class="text-4xl font-extrabold dark:text-white mb-6">Cliente {{clientId}}</h1>
+    @if(vacancies()) {
+      <shared-custom-table 
+      [dataSource]="vacancies()" 
+      [colums]="displayedColums"
+      [mapColum]="mapColum"
+      [withPaginator]="true" 
+      [withSort]="true"
+      [withActions]="true"
+      [actionsItems]="actionsItems"
+      (actionEvent)="handleActions($event)" 
+      [withFilter]="true"/>
+    }
+    
+</div>

@@ -1,6 +1,6 @@
 <div class="flex justify-center">
   <div class="w-1/2">
-    <form class="login-container" [formGroup]="loginForm">
+    <form class="login-container" (ngSubmit)="login()" [formGroup]="loginForm">
       <div class="email">
         <label for="email">Email Address</label>
         <div class="sec-2">
@@ -24,7 +24,7 @@
           />
         </div>
       </div>
-      <button class="login">Login</button>
+      <button type="submit" class="login">Login</button>
       <div class="footer"><span>Signup</span><span>Forgot Password?</span></div>
     </form>
   </div>

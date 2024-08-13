@@ -17,7 +17,16 @@
   </button>
   <!-- Dropdown menu -->
   <mat-menu #menu="matMenu">
-    <button mat-menu-item>Mariana</button>
-    <button mat-menu-item>Item 2</button>
+
+    @for (item of items(); track item.id) {
+      
+      @if(item.handler) {
+        <shared-drop-down-menu-item [handler]="item.handler" [description]="item.description"/>
+      }@else {
+        <shared-drop-down-menu-item [description]="item.description"/>
+      }
+    
+    }
+    
   </mat-menu>
 </div>

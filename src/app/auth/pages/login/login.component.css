@@ -75,7 +75,6 @@
     margin-right: -5em;
   }
   .login-container .login {
-    @apply bg-mp-orange;
     padding: 1em;
     color: white;
     border: none;

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, computed, inject, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
@@ -10,6 +10,15 @@ import ActionItem from '../../../shared/interfaces/ActionItem.interface';
 import { Router } from '@angular/router';
 import { ClientService } from '../../services/client-service/client.service';
 import Client from '../../interfaces/Client.interface';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { AuthService } from '../../../auth/service/auth.service';
+import { EditClientDialogComponent } from '../../components/edit-client-dialog/edit-client-dialog.component';
+import DataDialogEditClient from '../../interfaces/DataDialogEditClient.interface';
+
+import { 
+  MatDialog,
+} from '@angular/material/dialog';
+import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
 
 
 @Component({
@@ -22,7 +31,10 @@ import Client from '../../interfaces/Client.interface';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    CustomTableComponent
+    CustomTableComponent,
+    MatProgressSpinnerModule,
+    EditClientDialogComponent,
+    LoadingModalComponent
   ],
   templateUrl: './all-clients.component.html',
   styleUrl: './all-clients.component.css'
@@ -31,26 +43,16 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
   
   private router : Router = inject(Router);
   private clientService: ClientService = inject(ClientService);
-  public clients?: Client[];
+  public clients = computed(()=>this.clientService.clientsValue());
+  private authService : AuthService = inject(AuthService);
 
-  displayedColumns: string[] = ['id', 'nit', 'name', 'actions'];
+  readonly dialog = inject(MatDialog);
 
-  ngOnInit(): void {
-    this.clientService.getAll().subscribe({
-      next : (clients:Client[]) => {
-        this.clients = clients;
-      }
-    })
-  }
-  
-  mapColum = {
-    'id' : 'ID',
-    'nit': 'NIT',
-    'name': 'NAME',
-    'actions': 'ACTIONS'
-  }
+  displayedColumns: string[] = ['id', 'nit', 'name', 'business_name', 'date_intro','ans_submission','ans_closing','is_active', 'actions'];
 
-  actionsItems : ActionItem[] = [
+  public isLoading = signal<boolean>(false);
+
+  actionsItems : WritableSignal<ActionItem[]> = signal([
     {
       actionDescription: 'Detalles',
       icon : 'search'
@@ -59,13 +61,71 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
       actionDescription: 'Vacantes',
       icon: 'people_outline'
     }
-  ]
+  ])
+
+  ngOnInit(): void {
+    this.clientService.getAll().subscribe({
+      error : (err) => {
+        console.log('error al obtener los clientes')
+      }
+    })
+   
+    if(this.authService.userValue()?.is_superuser) {
+      this.actionsItems.set([...this.actionsItems(), { actionDescription : 'Editar', icon: 'edit'}]);
+    }
+  }
+  
+  mapColum = {
+    'id' : 'ID',
+    'nit': 'NIT',
+    'name': 'NAME',
+    'business_name' : 'BUSINESS NAME',
+    'date_intro' : 'DATE INTRO',
+    'is_active' : 'STATE',
+    'ans_submission': 'ANS SUBMISSION',
+    'ans_closing' : 'ANS CLOSING',
+    'actions': 'ACTIONS'
+  }
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngAfterViewInit() {
     
+  }
+
+  openDialog(client : Client): void {
+    
+    const dialogData : DataDialogEditClient = {
+      title : `Editar cliente ${client.name}`,
+      client : client
+    }
+
+    const dialogRef = this.dialog.open(EditClientDialogComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe( (client: Client | null) => {
+      if (client) {
+        this.editClient(client);
+      }
+    });
+  }
+
+  editClient(client : Client) {
+    this.isLoading.set(true);
+    
+    this.clientService.editClient(client).subscribe({
+
+      next : ()=> {
+        this.isLoading.set(false);
+      },
+      error : (err) => {
+        this.isLoading.set(false);
+        console.log('Error al editar usuario')
+      }
+    });
   }
 
 
@@ -77,6 +137,10 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
 
       case 'Vacantes':
         this.goToVacanciesPerClient(event.element);
+        break;
+      
+      case 'Editar':
+        this.openDialog(event.element)
         break;
     }
   }

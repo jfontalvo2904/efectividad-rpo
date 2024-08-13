@@ -1,4 +1,4 @@
-import { Component, input, OnInit, AfterViewInit, ViewChild, Signal, signal, output } from '@angular/core';
+import { Component, input, OnInit, AfterViewInit, ViewChild, Signal, signal, output, effect } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
@@ -24,7 +24,7 @@ import ActionItem from '../../interfaces/ActionItem.interface';
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.css'
 })
-export class CustomTableComponent implements OnInit, AfterViewInit {
+export class CustomTableComponent implements AfterViewInit {
 
   data = input.required<any[]>({alias : 'dataSource'});
   colums = input.required<string[]>();
@@ -40,15 +40,20 @@ export class CustomTableComponent implements OnInit, AfterViewInit {
 
   propertyNames = signal<string[]>([]);
 
+  constructor() {
+    this.dataSource  = new MatTableDataSource<any>([]);
+    effect(()=> {
+      this.dataSource!.data = this.data()
+    })
+  }
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator | null = null;
   @ViewChild(MatSort) sort: MatSort | null = null;
 
   dataSource?: MatTableDataSource<any>;
 
-  ngOnInit(): void {
-    this.dataSource  = new MatTableDataSource<any>(this.data());
-  }
+
 
 
   ngAfterViewInit(): void {

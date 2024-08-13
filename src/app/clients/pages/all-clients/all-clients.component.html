@@ -1,18 +1,31 @@
-
+@if(this.isLoading()) {
+  <shared-loading-modal></shared-loading-modal>
+}
 <div class="m-4">
   <h1 class="text-4xl font-extrabold dark:text-white mb-6">Clientes</h1>
-  @if(clients) {
+
+  @defer (when clients()) {
     <shared-custom-table 
-    [dataSource]="clients" 
+    [dataSource]="clients()!" 
     [colums]="displayedColumns" 
     [mapColum]="mapColum"
     [withPaginator]="true" 
     [withSort]="true" 
     [withFilter]="true"
     [withActions]="true"
-    [actionsItems]="actionsItems"
+    [actionsItems]="actionsItems()"
     (actionEvent)="handleAction($event)"/>
 
+  }@placeholder {
+    <shared-custom-table 
+    [dataSource]="[]"
+    [colums]="displayedColumns"
+    />
+  } @loading(minimum 1s) {
+    <div class="flex justify-center">
+      <mat-spinner></mat-spinner>
+    </div>
   }
+  
   
 </div>

@@ -14,6 +14,8 @@
     [withFilter]="true"
     [withActions]="true"
     [actionsItems]="actionsItems()"
+    [withAddButton]="isSuperUser? true : false"
+    [addButtonOptons]="addButtonOptions"
     (actionEvent)="handleAction($event)"/>
 
   }@placeholder {

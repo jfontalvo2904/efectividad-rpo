@@ -14,11 +14,12 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import Client from '../../interfaces/Client.interface';
-import DataDialogEditClient from '../../interfaces/DataDialogEditClient.interface';
+import DataDialogEditOrCreateClient from '../../interfaces/DataDialogEditClient.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import moment from 'moment';
 import {MatSlideToggleModule,} from '@angular/material/slide-toggle';
+import CreateClientData from '../../interfaces/CreateClientData.interface';
 
 const MY_DATE_FORMATS: MatDateFormats = {
   parse: {
@@ -58,25 +59,40 @@ export class EditClientDialogComponent{
  
 
   readonly dialogRef = inject(MatDialogRef<EditClientDialogComponent>);
-  readonly data = inject<DataDialogEditClient>(MAT_DIALOG_DATA);
+  readonly data = inject<DataDialogEditOrCreateClient>(MAT_DIALOG_DATA);
 
   private formBuilder: FormBuilder = inject(FormBuilder);
 
   public clientForm: FormGroup;
 
   constructor() {
-    this.clientForm = this.formBuilder.group( {
-      nit : [this.data.client.nit, [Validators.required]],
-      name : [this.data.client.name, [Validators.required]],
-      businessName : [this.data.client.business_name],
-      dateIntro : [this.data.client.date_intro],
-      ansSubmission : [this.data.client.ans_submission, [Validators.required]],
-      ansClosing : [this.data.client.ans_closing, [Validators.required]],
-      isActivate: [this.data.client.is_active, [Validators.required]]
 
-    })
+    if(this.data.client) {
+      this.clientForm = this.formBuilder.group( {
+        nit : [this.data.client.nit, [Validators.required]],
+        name : [this.data.client.name, [Validators.required]],
+        businessName : [this.data.client.business_name],
+        dateIntro : [this.data.client.date_intro],
+        ansSubmission : [this.data.client.ans_submission, [Validators.required,Validators.pattern('^[0-9]+$')]],
+        ansClosing : [this.data.client.ans_closing, [Validators.required,Validators.pattern('^[0-9]+$')]],
+        isActivate: [this.data.client.is_active, [Validators.required]]
+  
+      })
+    }else{
 
-    if(this.data.client.date_intro) {
+      this.clientForm = this.formBuilder.group( {
+        nit : ["" , [Validators.required]],
+        name : ["", [Validators.required]],
+        businessName : [null],
+        dateIntro : [null],
+        ansSubmission : [null, [Validators.pattern('^[0-9]+$')]],
+        ansClosing : [null,[Validators.pattern('^[0-9]+$')]],
+        isActivate: [false]
+  
+      })
+    }
+  
+    if(this.data.client?.date_intro) {
       this.clientForm.get('dateIntro')!.setValue(moment(this.data.client.date_intro));
     }
     
@@ -87,9 +103,10 @@ export class EditClientDialogComponent{
     this.dialogRef.close();
   }
 
-  aceptar(): Client | null {
+  aceptar(): Client| CreateClientData | null {
+    
     if(this.clientForm.valid) {
-
+      
       let dateIntro : string | null = null;
 
       if(this.clientForm.get('dateIntro')?.value) {
@@ -97,7 +114,7 @@ export class EditClientDialogComponent{
       }
 
       return {
-        id: this.data.client.id,
+        id: this.data.client?.id,
         nit : this.clientForm.get('nit')!.value,
         name: this.clientForm.get('name')!.value,
         business_name: this.clientForm.get('businessName')!.value,

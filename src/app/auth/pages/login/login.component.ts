@@ -4,6 +4,7 @@ import { AuthService } from '../../service/auth.service';
 import User from '../../interfaces/User.interface';
 import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
 import { Router } from '@angular/router';
+import CustomSwal from '../../../shared/utils/CustomSwal';
 
 
 @Component({
@@ -24,8 +25,8 @@ export class LoginComponent {
   
 
   public loginForm: FormGroup = this.formBuilder.group({
-    email : ['stephanymore2002@gmail.com', [Validators.required]],
-    password: ['2019114034',[Validators.required]]
+    email : ['', [Validators.required]],
+    password: ['',[Validators.required]]
   });
 
   login() {
@@ -45,7 +46,13 @@ export class LoginComponent {
         },
         error : (err : any) => {
           this.isLoading.set(false);
-          console.log("Ha ocurrido un error")
+          if(err.status === 404) {
+            CustomSwal.modalError("Lo sentimos", "No hemos podido encontrar al usuario");
+          }else if(err.status === 400){
+            CustomSwal.modalError("Verifica tus datos","El usuario o contraseña son incorrectos")
+          }else{
+            CustomSwal.modalError("Algo ha salido mal","Por favor intenta nuevamente en otro momento")
+          }
         }
       });
     

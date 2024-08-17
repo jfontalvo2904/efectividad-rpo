@@ -14,11 +14,16 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { AuthService } from '../../../auth/service/auth.service';
 import { EditClientDialogComponent } from '../../components/edit-client-dialog/edit-client-dialog.component';
 import DataDialogEditClient from '../../interfaces/DataDialogEditClient.interface';
+import CustomSwal from '../../../shared/utils/CustomSwal';
 
 import { 
   MatDialog,
 } from '@angular/material/dialog';
 import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { finalize } from 'rxjs';
+import CustomTableAddButtonOptions from '../../../shared/interfaces/CustomTableAddButtonOptions.interface';
+import CreateClientData from '../../interfaces/CreateClientData.interface';
 
 
 @Component({
@@ -34,7 +39,8 @@ import { LoadingModalComponent } from '../../../shared/components/loading-modal/
     CustomTableComponent,
     MatProgressSpinnerModule,
     EditClientDialogComponent,
-    LoadingModalComponent
+    LoadingModalComponent,
+    ConfirmationModalComponent
   ],
   templateUrl: './all-clients.component.html',
   styleUrl: './all-clients.component.css'
@@ -45,6 +51,7 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
   private clientService: ClientService = inject(ClientService);
   public clients = computed(()=>this.clientService.clientsValue());
   private authService : AuthService = inject(AuthService);
+  public isSuperUser = this.authService.userValue()?.is_superuser;
 
   readonly dialog = inject(MatDialog);
 
@@ -63,6 +70,13 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
     }
   ])
 
+  addButtonOptions:CustomTableAddButtonOptions = {
+    tooltipDescription: "Añadir",
+    tooltipPosition : "above",
+    fontIcon:"add",
+    handleFunction: ()=> { this.openDialogCreateClient() }
+  }
+
   ngOnInit(): void {
     this.clientService.getAll().subscribe({
       error : (err) => {
@@ -70,8 +84,15 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
       }
     })
    
-    if(this.authService.userValue()?.is_superuser) {
-      this.actionsItems.set([...this.actionsItems(), { actionDescription : 'Editar', icon: 'edit'}]);
+    if(this.isSuperUser) {
+      this.actionsItems.set(
+        [
+          ...this.actionsItems(), 
+          { actionDescription : 'Editar', icon: 'edit'},
+          { actionDescription : 'Eliminar', icon: 'delete'},
+
+        ]
+      );
     }
   }
   
@@ -95,7 +116,7 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
     
   }
 
-  openDialog(client : Client): void {
+  openDialogEditClient(client : Client): void {
     
     const dialogData : DataDialogEditClient = {
       title : `Editar cliente ${client.name}`,
@@ -111,6 +132,71 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
         this.editClient(client);
       }
     });
+
+  }
+
+  openDialogCreateClient() {
+
+    const dialogRef = this.dialog.open(EditClientDialogComponent, {
+      data: {title:"Crear cliente"}
+    });
+
+    dialogRef.afterClosed().subscribe( (client: CreateClientData | null) => {
+      if (client) {
+        const cleanedClient = Object.fromEntries(Object.entries(client).filter(([key, value]) => value !== null && value !== undefined)) as CreateClientData;
+        
+        this.isLoading.set(true);
+        this.clientService.createClient(cleanedClient)
+        .pipe(finalize(()=>{this.isLoading.set(false)}))
+        .subscribe({
+          next : clientRes => {
+            CustomSwal.toast({title:"El cliente se ha creado correctamente", timer:2000});
+          },
+          error: err => {
+            CustomSwal.toast({title:"No hemos podido eliminar al cliente", icon:"error", timer:2000});
+          } 
+        })
+      }
+    });
+
+  }
+
+  
+  openConfirmationDialog(client: Client): void {
+    
+    const dialogData : {title:string, description:string} = {
+      title : `Eliminar cliente ${client.name}`,
+      description : "¿Realmente desea eliminar al cliente?"
+    }
+
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe( (response:boolean | undefined) => {
+     
+      if(response) {
+        this.deleteClient(client.id!);
+      }
+    });
+  }
+
+  deleteClient(clientId:number) {
+
+    this.isLoading.set(true);
+
+    this.clientService
+    .deleteClient(clientId)
+    .pipe(finalize(()=>{this.isLoading.set(false)}))
+    .subscribe({
+      next : response => {
+        CustomSwal.toast({title: "El cliente se ha eliminado correctamente",timer:2000})
+      },
+      error: err => {
+        CustomSwal.toast({title:"No se ha podido eliminar el cliente", icon:"error", timer:2000});
+      }
+    })
+
   }
 
   editClient(client : Client) {
@@ -120,6 +206,7 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
 
       next : ()=> {
         this.isLoading.set(false);
+        CustomSwal.toast({title: "El cliente se ha editado correctamente",timer:2000})
       },
       error : (err) => {
         this.isLoading.set(false);
@@ -130,17 +217,22 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
 
 
   handleAction(event : {actionReference: string, element: Client}) {
+    const client: Client = event.element;
+    
     switch( event.actionReference) {
       case 'Detalles' : 
-        this.goToClientDetails(event.element);
+        this.goToClientDetails(client);
         break;
 
       case 'Vacantes':
-        this.goToVacanciesPerClient(event.element);
+        this.goToVacanciesPerClient(client);
         break;
       
       case 'Editar':
-        this.openDialog(event.element)
+        this.openDialogEditClient(client)
+        break;
+      case 'Eliminar':
+        this.openConfirmationDialog(client);
         break;
     }
   }

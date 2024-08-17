@@ -1,13 +1,30 @@
 @if(dataSource) {
 
-    @if(withFilter()) {
-        <mat-form-field>
-            <mat-label>Filter</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-            <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-    } 
+    <div class="flex justify-between px-3">
+        @if(withFilter()) {
+            <mat-form-field>
+                <mat-label>Filter</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        } 
+    
+        @if(withAddButton()) {
+            <div class="mb-4">
+                <button mat-raised-button
+                    [matTooltip]="addButtonOptons().tooltipDescription!"
+                    [matTooltipPosition]="addButtonOptons().tooltipPosition!"
+                    aria-label="Button that displays a tooltip when focused or hovered over" 
+                    (click)="addButtonOptons().handleFunction()">
+                    
+                    <mat-icon [fontIcon]="addButtonOptons().fontIcon!"></mat-icon>
+                </button>
+            </div>
+        }
 
+    </div>
+
+    
     <div class="mat-elevation-z8">
         <table mat-table matSort [dataSource]="dataSource">
 

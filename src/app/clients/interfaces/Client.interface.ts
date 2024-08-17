@@ -1,5 +1,5 @@
 export default interface Client{
-    id:             number;
+    id?:             number;
     name:           string;
     business_name:  null | string;
     nit:            string;

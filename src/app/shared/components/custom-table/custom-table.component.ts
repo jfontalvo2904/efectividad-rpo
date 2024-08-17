@@ -8,6 +8,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import ActionItem from '../../interfaces/ActionItem.interface';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
+import CustomTableAddButtonOptions from '../../interfaces/CustomTableAddButtonOptions.interface';
+
 
 @Component({
   selector: 'shared-custom-table',
@@ -20,7 +24,11 @@ import ActionItem from '../../interfaces/ActionItem.interface';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule, 
-    MatMenuModule],
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule
+  ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.css'
 })
@@ -35,6 +43,13 @@ export class CustomTableComponent implements AfterViewInit {
   actionsItems = input<ActionItem[]>([])
   pageSizeOptions = input<number[]>([5,10,20]);
   withFilter = input<boolean>(false);
+  withAddButton = input<boolean>(false);
+  addButtonOptons = input<CustomTableAddButtonOptions>({
+    tooltipDescription: "Añadir",
+    tooltipPosition : "above",
+    fontIcon:"add",
+    handleFunction: ()=>{}
+  })
 
   actionEvent = output<any>();
 

@@ -1,15 +1,38 @@
-export enum VacancyState {
-    Abierta = 'Abierta',
-    Cubierta = 'Cubierta',
-    Cancelada = 'Cancelada',
-}
-
 export default interface Vacancy {
-    id: number,
-    clientId: number,
-    name: string,
-    availablePositions: number,
-    dateAssignment : string,
-    state: VacancyState,
-    observations:string
+    id:                     number;
+    name:                   string;
+    number_openings:        number;
+    assignment_date:        string;
+    deadline:               string | null;
+    management_periodo:     string;
+    idunique_vacancy:       string;
+    cancelled:              number;
+    suspended:              number;
+    filled:                 number;
+    filled_on_time:         number;
+    filled_late:            number;
+    open:                   number | null;
+    lost:                   number | null;
+    closing_date:           string | null;
+    preselection:           number;
+    successful_screening:   number;
+    interviewed_consultant: number;
+    sent_to_the_client:     number;
+    approved_by_client:     number;
+    approval_target:        number | null;
+    observations:           string | null;
+    sector_id:              number;
+    responsible:            number;
+    role_responsible:       number;
+    client:                 number;
+    client_name:            string;
+    leader:                 number;
+    vacancy_type:           number;
+    status:                 number|null;
+    status_name?:            string;
+    sector_name:            string;
+    vacancy_type_name:      string;
+    responsible_name:       string;
+    role_responsible_name:  string;
+    leader_name:            string;
 }

@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="addSupportForm">
+        
+        <div class="flex gap-2">
+            <div class="flex flex-col gap-2 flex-wrap">
+                
+                <mat-form-field>
+                    <mat-label>Responsible</mat-label>
+                    <mat-select name="responsible" formControlName="responsible" (valueChange)="changeSelectSupport($event)">
+                        @for (support of selectSupports(); track support) {
+                            <mat-option [value]="support.value">{{support.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-hint> <span class="text-base">Role: {{currentRoleName()}}</span></mat-hint>
+                </mat-form-field>
+                
+                <mat-form-field>
+                    <mat-label>Approval target</mat-label>
+                    <input formControlName="approval_target" matInput>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Number openings</mat-label>
+                    <input formControlName="number_openings" matInput>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Assignment date</mat-label>
+                    <input matInput [matDatepicker]="picker1" formControlName="assignment_date">
+                    <mat-hint>YYYY/MM/DD</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+
+               
+              </div>
+    
+        </div>
+    </form>
+   
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [disabled]="addSupportForm.invalid" [mat-dialog-close]="aceptar()">Aceptar</button>
+</mat-dialog-actions>

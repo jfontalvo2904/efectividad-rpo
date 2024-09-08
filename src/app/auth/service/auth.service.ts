@@ -15,9 +15,7 @@ export class AuthService {
   private readonly apiUrl: string  = `${environment.apiBaseUrl}/api/users`;
 
   private user: WritableSignal<User | null> = signal(null);
-
-  public userValue: Signal<User | null> = computed( ()=> this.user() );
-
+  
   constructor() { }
 
   login(username: string, password : string): Observable<User> {
@@ -43,6 +41,10 @@ export class AuthService {
     if(token) {
       localStorage.setItem('userToken', token); 
     }
+  }
+
+  get userValue() {
+    return this.user();
   }
 
   get userToken(): string | null {

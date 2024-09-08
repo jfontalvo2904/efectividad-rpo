@@ -1,9 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/pages/login/login.component';
 import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
-import { NewVacancyComponent } from './vacancy/pages/new-vacancy/new-vacancy.component';
-import { NewVacancyV2Component } from './vacancy/pages/new-vacancy-v2/new-vacancy-v2.component';
-import { AllClientsComponent } from './clients/pages/all-clients/all-clients.component';
 import { authGuard } from './auth/guards/auth/auth.guard';
 
 export const routes: Routes = [

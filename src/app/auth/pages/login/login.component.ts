@@ -25,13 +25,16 @@ export class LoginComponent {
   
 
   public loginForm: FormGroup = this.formBuilder.group({
-    email : ['', [Validators.required]],
-    password: ['',[Validators.required]]
+    email : ['stephanymore2002@gmail.com', [Validators.required, Validators.email]],
+    password: ['2019114034',[Validators.required]]
   });
 
   login() {
 
-    if(this.loginForm.invalid) {return};
+    if(this.loginForm.invalid) {
+      CustomSwal.toast({icon:'error', title:'Rellena los campos correctamente'})
+      return
+    };
 
     let username: string = this.loginForm.get('email')?.value;
     let password: string = this.loginForm.get('password')?.value;

@@ -1,4 +1,4 @@
 export default interface SelectData {
-    value: string;
+    value: string| number;
     viewValue: string;
 }

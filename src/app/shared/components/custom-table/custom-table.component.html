@@ -3,7 +3,7 @@
     <div class="flex justify-between px-3">
         @if(withFilter()) {
             <mat-form-field>
-                <mat-label>Filter</mat-label>
+                <mat-label>Filtrar</mat-label>
                 <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>

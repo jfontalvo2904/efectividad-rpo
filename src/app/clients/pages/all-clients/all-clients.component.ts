@@ -49,9 +49,9 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
   
   private router : Router = inject(Router);
   private clientService: ClientService = inject(ClientService);
-  public clients = computed(()=>this.clientService.clientsValue());
+  public clients = computed(()=>this.clientService.clientsValue);
   private authService : AuthService = inject(AuthService);
-  public isSuperUser = this.authService.userValue()?.is_superuser;
+  public isSuperUser = this.authService.userValue?.is_superuser;
 
   readonly dialog = inject(MatDialog);
 

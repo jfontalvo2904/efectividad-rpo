@@ -1,0 +1,150 @@
+<div class="border px-4 pb-4">
+    <div class="h-10 rounded-b-lg bg-mp-light-blue">
+        <p>Actualizar vacante {{vacancy?.id}}</p>
+    </div>
+
+    <form [formGroup]="myForm">
+        <div class="mt-5" id="form-content">
+            <section class="flex gap-2 flex-wrap">
+                
+                <mat-form-field floatLabel="always">
+                    <mat-label>Cliente</mat-label>
+                    <input formControlName="client" [value]="vacancy?.client_name" matInput>
+                </mat-form-field>
+                
+                <mat-form-field floatLabel="always">
+                    <mat-label>Nombre de la vacante</mat-label>
+                    <input formControlName="name" matInput>
+                </mat-form-field>
+
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Lider de cuenta</mat-label>
+                    <input formControlName="leader" matInput>
+                </mat-form-field>
+                
+                <mat-form-field floatLabel="always">
+                    <mat-label>Fecha de asignación</mat-label>
+                    <input matInput [matDatepicker]="picker1" formControlName="assignment_date">
+                    <mat-hint>YYYY/MM/DD</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Fecha limite de cierre</mat-label>
+                    <input matInput [matDatepicker]="picker2" formControlName="deadline">
+                    <mat-hint>YYYY/MM/DD</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Número de posiciones</mat-label>
+                    <input formControlName="number_openings" matInput>
+                </mat-form-field>
+
+               
+            </section>
+
+            <section class="flex justify-center mt-5" id="managers-table">
+            <div class="w-2/3">
+                <shared-custom-table 
+                    [dataSource]="supportsByVacancy()" 
+                    [colums]="columsManagers" 
+                    [mapColum]="mapColum"
+                    [withPaginator]="true" 
+                    [withSort]="true" 
+                    [withFilter]="true"
+                    [withActions]="true"
+                    [withAddButton]="true"
+                    [addButtonOptons]="addButtonOptions"/>
+            </div>
+            
+            </section>
+
+            <section class="flex gap-2 mt-5 flex-wrap">
+                <mat-form-field floatLabel="always">
+                    <mat-label># de posiciones canceladas</mat-label>
+                    <input formControlName="cancelledPositions" matInput >
+                </mat-form-field>
+                
+                <mat-form-field floatLabel="always">
+                    <mat-label># de posiciones suspendidas</mat-label>
+                    <input formControlName="suspended" matInput >
+                </mat-form-field>
+                <mat-form-field floatLabel="always">
+                    <mat-label># de vacantes cubiertas</mat-label>
+                    <input formControlName="filled" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label># de vacantes cubiertas en tiempos</mat-label>
+                    <input formControlName="filled_on_time" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label># de vacantes cubiertas fuera de tiempo</mat-label>
+                    <input formControlName="filled_late" matInput>
+                </mat-form-field>
+                
+
+                <mat-form-field>
+                    <mat-label>Fecha de cierre</mat-label>
+                    <input matInput [matDatepicker]="picker3" formControlName="closing_date">
+                    <mat-hint>YYYY/MM/DD</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker #picker3></mat-datepicker>
+                </mat-form-field>
+
+            </section>
+
+
+            <section class="flex gap-2 mt-5 flex-wrap">
+                
+                <mat-form-field floatLabel="always">
+                    <mat-label># de preselección</mat-label>
+                    <input formControlName="preselection" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label># pre-screening exitoso</mat-label>
+                    <input formControlName="successful_screening" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label> # entrevistados por consultor</mat-label>
+                    <input formControlName="interviewed_consultant" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label># Candidatos enviados al cliente</mat-label>
+                    <input formControlName="sent_to_the_client" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label># Aprobados por el cliente</mat-label>
+                    <input formControlName="approved_by_client" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Meta de aprobación</mat-label>
+                    <input formControlName="approvalTarget" matInput>
+                </mat-form-field>
+
+            </section>
+
+            <section class="mt-5">
+                <mat-form-field class="w-full" floatLabel="always">
+                    <mat-label>Observaciones</mat-label>
+                   <textarea matInput formControlName="observations"></textarea>
+                </mat-form-field>
+            </section>
+
+
+        </div>
+
+
+    </form>
+
+</div>

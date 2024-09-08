@@ -21,7 +21,37 @@ export class VacanciesPerClientComponent implements OnInit {
 
   public clientId!: number;
   
-  public displayedColums: string[] = ['id', 'name', 'availablePositions','dateAssignment', 'state','observations', 'actions' ];
+  public displayedColums: string[] = [
+    "id",
+    "name",
+    "number_openings",
+    "assignment_date",
+    "deadline",
+    "management_periodo",
+    "idunique_vacancy",
+    "cancelled",
+    "suspended",
+    "filled",
+    "filled_on_time",
+    "filled_late",
+    "open",
+    "lost",
+    "closing_date",
+    "preselection",
+    "successful_screening",
+    "interviewed_consultant",
+    "sent_to_the_client",
+    "approved_by_client",
+    "approval_target",
+    "observations",
+    "sector_id",
+    "responsible",
+    "role_responsible",
+    "client",
+    "leader",
+    "vacancy_type",
+    "status"
+  ];
 
   public mapColum = {
     'id' : 'ID',

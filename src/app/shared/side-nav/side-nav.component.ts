@@ -26,7 +26,7 @@ export class SideNavComponent {
 
   private authService = inject(AuthService);
 
-  public isAuth = computed( ()=> this.authService.userValue() );
+  public isAuth = computed( ()=> this.authService.userValue );
 
   @Input()
   items : SideNavItem[] = [];

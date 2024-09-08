@@ -1,12 +1,15 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, inject, signal } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { SideNavComponent } from './shared/side-nav/side-nav.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import SideNavItem from './shared/interfaces/SideNavItem.interface';
 import { AuthService } from './auth/service/auth.service';
 import { LoadingModalComponent } from './shared/components/loading-modal/loading-modal.component';
 import User from './auth/interfaces/User.interface';
+import CustomSwal from './shared/utils/CustomSwal';
+import { SharedService } from './shared/shared.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -26,21 +29,25 @@ export class AppComponent implements OnInit {
   title = 'efectividad-rpo';
 
   authService: AuthService = inject(AuthService);
+  sharedService:SharedService = inject(SharedService);
   router : Router = inject(Router);
+  activatedRoute = inject(ActivatedRoute);
 
-  isLoading = signal<boolean>(false);
+
+  isLoading = computed( ()=> this.sharedService.isLoading() )
 
   ngOnInit(): void {
-    this.isLoading.set(true);
-    this.authService.refreshUser().subscribe({
+    this.sharedService.isLoading.set(true);
+
+    this.authService.refreshUser()
+    .pipe(finalize(()=>{this.sharedService.isLoading.set(false)})).subscribe({
       next: (data : User | null)=> {
-        this.isLoading.set(false);
         if(data){
-          this.router.navigate(['/clients'])
+          this.router.navigate(['/vacancy/vacancies'])
         }
       },
       error : (err) => {
-        this.isLoading.set(false);
+        CustomSwal.toast({title:"La sesión ha expirado", icon:"error"})
         console.log('La sesión ha expirado', err);
       }
     })
@@ -49,6 +56,11 @@ export class AppComponent implements OnInit {
 
 
   sideNavItems:SideNavItem[] = [
+    {
+      description: 'Vacantes',
+      icon: 'assignment',
+      route:'/vacancy/vacancies'
+    },
     {
       description : 'Agregar vacante',
       icon : 'assignment',

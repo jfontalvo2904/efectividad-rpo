@@ -32,11 +32,14 @@
   
     <mat-sidenav-content>
       <div class="flex justify-between mt-2">
-          <shared-logo (click)="sidenav.toggle()" class="pl-1"/>  
+        <shared-logo (click)="sidenav.toggle()" class="pl-1"/>  
         <shared-header></shared-header>
       </div>
+
+      <main>
+        <router-outlet></router-outlet>
+      </main>
       
-      <router-outlet></router-outlet>
   
     </mat-sidenav-content>
   </mat-sidenav-container>

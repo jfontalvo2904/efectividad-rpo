@@ -1,0 +1,10 @@
+<mat-form-field class="w-full">
+    <mat-label>Periodo de gestión mes/año</mat-label>
+    <input matInput [matDatepicker]="dp" [formControl]="date">
+    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp
+                    (monthSelected)="setMonthAndYear($event,dp)"
+                    startView="multi-year"
+                    panelClass="month-picker">
+    </mat-datepicker>
+</mat-form-field>

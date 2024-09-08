@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
 
   authService = inject(AuthService);
-  isAuth = computed(()=> this.authService.userValue() );
+  isAuth = computed(()=> this.authService.userValue );
   router: Router = inject(Router);
 
   menuItems: DropDownMenuItem[] = [

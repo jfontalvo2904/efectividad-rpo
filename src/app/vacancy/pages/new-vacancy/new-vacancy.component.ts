@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal, ViewEncapsulation, WritableSignal} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {provideMomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatDatepicker, MatDatepickerModule} from '@angular/material/datepicker';
@@ -10,6 +10,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { ClientService } from '../../../clients/services/client-service/client.service';
+import Client from '../../../clients/interfaces/Client.interface';
+import CustomSwal from '../../../shared/utils/CustomSwal';
 
 
 const moment = _rollupMoment || _moment;
@@ -55,8 +58,27 @@ interface Car {
   styleUrl: './new-vacancy.component.css'
 })
 export class NewVacancyComponent {
+
   public selectedValue: string = '';
   public selectedCar: string = '';
+
+  private clientService: ClientService = inject(ClientService);
+  clients :WritableSignal< Client[] | null> = signal(null)
+
+  constructor() {
+    if(this.clientService.clientsValue){
+      this.clients.set(this.clientService.clientsValue);
+    }else{
+      this.clientService.getAll().subscribe({
+        next: data => {
+          this.clients.set(data);
+        },
+        error: err => {
+          CustomSwal.modalError("Algo ha salido mal", "No ha sido posible obtener los clientes");
+        }
+      });
+    }
+  }
 
   foods: Food[] = [
     {value: 'steak-0', viewValue: 'Steak'},

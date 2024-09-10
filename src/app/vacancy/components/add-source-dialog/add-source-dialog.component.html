@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="addSourceForm">
+        
+        <div class="flex gap-2">
+            <mat-form-field>
+                <mat-label>Fuentes</mat-label>
+                <mat-select name="sources" formControlName="source" (valueChange)="changeSelectSource($event)">
+                    @for (source of selectSources(); track source) {
+                        <mat-option [value]="source.value">{{source.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Value</mat-label>
+                <input formControlName="value" matInput>
+            </mat-form-field>
+
+    
+        </div>
+    </form>
+   
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [disabled]="addSourceForm.invalid" [mat-dialog-close]="aceptar()">Aceptar</button>
+</mat-dialog-actions>

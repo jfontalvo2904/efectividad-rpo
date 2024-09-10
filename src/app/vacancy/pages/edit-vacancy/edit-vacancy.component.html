@@ -48,25 +48,24 @@
             </section>
 
             <section class="flex justify-center mt-5" id="managers-table">
-            <div class="w-2/3">
-                <shared-custom-table 
-                    [dataSource]="supportsByVacancy()" 
-                    [colums]="columsManagers" 
-                    [mapColum]="mapColum"
-                    [withPaginator]="true" 
-                    [withSort]="true" 
-                    [withFilter]="true"
-                    [withActions]="true"
-                    [withAddButton]="true"
-                    [addButtonOptons]="addButtonOptions"/>
-            </div>
-            
+                <div class="w-2/3">
+                    <shared-custom-table 
+                        [dataSource]="supportsByVacancy()" 
+                        [colums]="columsManagers" 
+                        [mapColum]="mapColum"
+                        [withPaginator]="true" 
+                        [withSort]="true" 
+                        [withFilter]="true"
+                        [withActions]="true"
+                        [withAddButton]="true"
+                        [addButtonOptons]="addButtonOptions"/>
+                </div>
             </section>
 
             <section class="flex gap-2 mt-5 flex-wrap">
                 <mat-form-field floatLabel="always">
                     <mat-label># de posiciones canceladas</mat-label>
-                    <input formControlName="cancelledPositions" matInput >
+                    <input formControlName="cancelled" matInput >
                 </mat-form-field>
                 
                 <mat-form-field floatLabel="always">
@@ -129,9 +128,24 @@
 
                 <mat-form-field floatLabel="always">
                     <mat-label>Meta de aprobación</mat-label>
-                    <input formControlName="approvalTarget" matInput>
+                    <input formControlName="approval_target" matInput>
                 </mat-form-field>
 
+            </section>
+
+            <section class="flex justify-center mt-5" id="sources-table">
+                <div class="w-2/3">
+                    <shared-custom-table 
+                        [dataSource]="sources()" 
+                        [colums]="columsSources" 
+                        [mapColum]="mapColumSources"
+                        [withPaginator]="true" 
+                        [withSort]="true" 
+                        [withFilter]="true"
+                        [withActions]="true"
+                        [withAddButton]="true"
+                        [addButtonOptons]="addButtonOptionsSources"/>
+                </div>
             </section>
 
             <section class="mt-5">
@@ -141,6 +155,18 @@
                 </mat-form-field>
             </section>
 
+            <section>
+                <div class="flex justify-end mt-8 gap-4">
+                    <button mat-fab extended color="tertiary">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar
+                    </button>
+                    <button mat-fab extended color="tertiary" (click)="openConfirmationDialogUpdateVacancy()">
+                        <mat-icon>save</mat-icon>
+                        Guardar
+                    </button>
+                </div>
+            </section>
 
         </div>
 

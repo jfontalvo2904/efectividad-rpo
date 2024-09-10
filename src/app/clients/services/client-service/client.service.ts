@@ -29,7 +29,7 @@ export class ClientService {
     return this.clients();
   }
 
-  getAll() : Observable<Client[]> {
+  getAll(): Observable<Client[]> {
     return this.http.get<Client[]>(this.apiUrl).pipe(
       tap( clients => this.clients.set(clients))
     );

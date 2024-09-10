@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ import CustomSwal from '../../../shared/utils/CustomSwal';
 import { AuthService } from '../../../auth/service/auth.service';
 import User from '../../../auth/interfaces/User.interface';
 import { SharedService } from '../../../shared/shared.service';
-import { finalize } from 'rxjs';
+import { finalize, single } from 'rxjs';
 import { ClientService } from '../../../clients/services/client-service/client.service';
 import ClientUtils from '../../../clients/utils/ClientUtils';
 import { MatDialog } from '@angular/material/dialog';
@@ -28,6 +28,13 @@ import DataDialogAddSupportStaff from '../../interfaces/DataDialogAddSupportStaf
 import SupportStaffByClientResponse from '../../interfaces/SupportStaffByClientResponse';
 import { AddSupportStaffDialogComponent } from '../../components/add-support-staff-dialog/add-support-staff-dialog.component';
 import SupportStaffByVacancyResponse from '../../interfaces/SupportStaffByVacancyResponse.interface';
+import SourceTableFormat from '../../interfaces/SourceTableFormat.interface';
+import VacancyUtils from '../../utils/VacancyUtils';
+import Source from '../../interfaces/Source.interface';
+import DataDialogAddSource from '../../interfaces/DataDialogAddSource.interface';
+import { AddSourceDialogComponent } from '../../components/add-source-dialog/add-source-dialog.component';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
+import UpdateVacancyRequest from '../../interfaces/UpdateVacancyRequest.interface';
 
 const MY_DATE_FORMATS: MatDateFormats = {
   parse: {
@@ -40,12 +47,6 @@ const MY_DATE_FORMATS: MatDateFormats = {
     monthYearA11yLabel: 'YYYY/MM',
   },
 };
-
-interface VacancyManager {
-  name: string,
-  position: string
-}
-
 
 @Component({
   selector: 'edit-vacancy',
@@ -84,6 +85,19 @@ export class EditVacancyComponent implements OnInit {
   selectedSource:string = '';
   vacancyId:number|null = null;
   vacancy?:Vacancy;
+  selectSource: WritableSignal<SelectData[]> = signal([]);
+
+  source: WritableSignal<Source| null> = signal(null);
+  
+  sources =computed(()=> {
+    if(this.source()) {
+      return VacancyUtils.sourceToSourceTableFormatList(this.source()!)
+    }else{
+      return []
+    }
+  });
+
+  
 
   readonly dialog = inject(MatDialog);
 
@@ -128,22 +142,19 @@ export class EditVacancyComponent implements OnInit {
       assignment_date:[{value:'',disabled:true},[Validators.required]],
       deadline:[{value:'',disabled:true},[Validators.required]],
       number_openings:[{value:null,disabled:true},[Validators.required]],
-      cancelledPositions: [],
-      suspended:[],
-      filled:[],
-      filled_on_time:[],
-      filled_late:[null],
-      closing_date:[],
-      preselection: [],
-      successful_screening: [],
-      interviewed_consultant:[],
-      sent_to_the_client:[],
-      approved_by_client:[],
-      approval_target:[],
-      source:[],
-      observations:[],
-      probabilityOfClousure:[],
-      costByVacancy:[]
+      cancelled: [null,Validators.required],
+      suspended:[null,Validators.required],
+      filled:[null, Validators.required],
+      filled_on_time:[null,Validators.required],
+      filled_late:[null,Validators.required],
+      closing_date:[null],
+      preselection: [null,Validators.required],
+      successful_screening: [null,Validators.required],
+      interviewed_consultant:[null,Validators.required],
+      sent_to_the_client:[null,Validators.required],
+      approved_by_client:[null,Validators.required],
+      approval_target:[null],
+      observations:[null],
 
     })
 
@@ -168,13 +179,13 @@ export class EditVacancyComponent implements OnInit {
     .subscribe({
       next: vacancy => {
         this.vacancy = vacancy;
-        console.log(this.vacancy)
         this.initForm();
+        this.getSources(this.vacancy.id)
       },
       error: err => {
         CustomSwal.modalError("Algo salió mal", `No hemos podido obtener la vacante con id ${this.vacancyId}`);
       }
-    }) 
+    }); 
 
     this.clientService.getAllLeaders().subscribe({
       next : leaders => {
@@ -183,8 +194,20 @@ export class EditVacancyComponent implements OnInit {
       error: err => {
         CustomSwal.modalError("Algo ha salido mal", "No ha sido posible obtener los lideres");
       }
-    })
+    });
 
+  }
+
+  getSources(vacancyId:number): void {
+    this.vacancyService.getSourceByVacancy(vacancyId).subscribe({
+      next: data => {
+        this.source.set(data); // la instancia real de los datos que llegaron
+        this.selectSource.set(VacancyUtils.selectSources(data)); // datos modificados para el select
+      },
+      error: ()=> {
+        CustomSwal.modalError("Algo salió mal", "No pudimos obtener las fuentes de la vacante");
+      }
+    })
   }
 
   initForm() {
@@ -215,6 +238,7 @@ export class EditVacancyComponent implements OnInit {
       this.setForm('leader',this.vacancy.leader_name)
       this.setForm('assignment_date',this.vacancy.assignment_date);
       this.setForm('number_openings',this.vacancy.number_openings);
+      this.setForm('cancelled',this.vacancy.cancelled);
       this.setForm('preselection',this.vacancy.preselection);
       this.setForm('successful_screening',this.vacancy.successful_screening);
       this.setForm('sent_to_the_client',this.vacancy.sent_to_the_client);
@@ -235,16 +259,7 @@ export class EditVacancyComponent implements OnInit {
     this.myForm.get(property)?.setValue(value);
   }
 
-  vacaniesManagers: VacancyManager[] = [
-    {
-      name : "stephany",
-      position : "Ing de Sistemas"
-    },
-    {
-      name: "Mariana",
-      position: "Ing de sistemas"
-    }
-  ] 
+
 
   columsManagers = [
     'responsible_name',
@@ -281,7 +296,121 @@ export class EditVacancyComponent implements OnInit {
      }
   }
 
+
+
+
+  columsSources = ['source', 'value']
+
+  mapColumSources = {
+    'source': 'Fuente',
+    'value': '# de candidatos'
+  }
+
+  addButtonOptionsSources:CustomTableAddButtonOptions = {
+    tooltipDescription: "Añadir Fuente",
+    tooltipPosition : "above",
+    fontIcon:"add",
+    handleFunction: ()=> { 
+      this.openDialogAddSource()
+     }
+  }
+
+  openDialogAddSource() {
+    const dialogData : DataDialogAddSource = {
+      title : 'Añadir Fuente',
+      sources: this.selectSource(),
+      source: this.source()!
+    }
+
+    const dialogRef = this.dialog.open(AddSourceDialogComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.vacancyService.updateSourceByVacancy(result).subscribe({
+          next: data => {
+            CustomSwal.toast({title: "Las fuentes se han actualizado correctamente"});
+            this.source.set(data);
+          },
+          error: ()=> {
+            CustomSwal.modalError("No pudimos actualizar las fuentes", "Intenta de nuevo en otro momento")
+          }
+        })
+      }
+    });
+
+  }
+
+  openConfirmationDialogUpdateVacancy(): void {
+    
+    const dialogData : {title:string, description:string} = {
+      title : `Actualizar vacante ${this.vacancy?.id}`,
+      description : "¿Realmente desea guardar los cambios?"
+    }
+
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe( (response:boolean | undefined) => {
+     
+      if(response) {
+        this.updateVacancy();
+      }
+    });
+  }
+
+  updateVacancy() {
+    if(this.myForm.valid) {
+
+      const formClosingDate = this.myForm.get('closing_date')?.value;
+
+      const closing_date:string | null = formClosingDate ? formClosingDate.format('YYYY-MM-DD') : null
+
+      let updateVacancyReques = {
+        ...this.vacancy,
+        client : this.myForm.get('client')?.value,
+        name : this.myForm.get('name')?.value,
+        assignment_date : this.myForm.get('assignment_date')?.value,
+        deadline : this.myForm.get('deadline')?.value,
+        number_openings : this.myForm.get('number_openings')?.value,
+        ...this.myForm.value,
+        closing_date
+
+      }
+
+      delete updateVacancyReques.open
+      delete updateVacancyReques.lost
+      delete updateVacancyReques.overcoverage
+      delete updateVacancyReques.vacancy_type_name
+      delete updateVacancyReques.client_name
+      delete updateVacancyReques.id
+      delete updateVacancyReques.leader_name
+      delete updateVacancyReques.responsible_name
+      delete updateVacancyReques.role_responsible_name
+      delete updateVacancyReques.sector_name
+      delete updateVacancyReques.vacancy_type_name
+
+      this.sharedService.isLoading.set(true);
+
+      this.vacancyService.updateVacancy(this.vacancy!.id,updateVacancyReques)
+      .pipe(finalize(()=>{this.sharedService.isLoading.set(false)}))
+      .subscribe({
+        next: data => {
+          CustomSwal.toast({title:"Se han guardado los datos correctametne", timer:2000})
+          console.log(data);
+        },
+        error: ()=> {
+          CustomSwal.modalError("Algo ha salido mal y no pudimos actualizar la vacante", "ponte en contacto con un administrador");
+        }
+      })
+
+
+    }else{
+      CustomSwal.modalError("Verifica tu formulario", "Los campos marcados con * son obligatorios");
+    }
+  }
+
   
-
-
 }

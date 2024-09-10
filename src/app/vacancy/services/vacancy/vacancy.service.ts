@@ -11,6 +11,8 @@ import DeadLineResponse from '../../interfaces/DeadLineResponse.interface';
 import SupportStaff from '../../interfaces/SupportStaffByClientResponse';
 import AddSupportStaffRequest from '../../interfaces/AddSupportStaffRequest.interface';
 import SupportStaffByVacancyResponse from '../../interfaces/SupportStaffByVacancyResponse.interface';
+import Source from '../../interfaces/Source.interface';
+import UpdateVacancyRequest from '../../interfaces/UpdateVacancyRequest.interface';
 
 
 
@@ -33,6 +35,10 @@ export class VacancyService {
 
   getAll(): Observable<Vacancy[]> {
     return this.http.get<Vacancy[]>(this.apiUrl);
+  }
+
+  updateVacancy(vacancyId:number,updateVacancyRequest:any):Observable<any> {
+    return this.http.put<Vacancy[]>(`${this.apiUrl}/${vacancyId}/`, updateVacancyRequest);
   }
 
   getAllVacancyTypes(): Observable<VacancyType[]> {
@@ -61,6 +67,18 @@ export class VacancyService {
     return this.http.get<Sector[]>(this.apiUrl + '/sector');
   }
 
+  getAllSources():Observable<Source[]> {
+    return this.http.get<Source[]>(`${this.apiUrl}/sources/`);
+  }
+
+  getSourceByVacancy(vacancyId:number):Observable<Source>{
+    return this.http.get<Source>(`${this.apiUrl}/sources/${vacancyId}`);
+  }
+
+  updateSourceByVacancy(source:Source):Observable<Source>{
+    return this.http.put<Source>(`${this.apiUrl}/sources/${source.vacancy}/`, source);
+  }
+  
   allSupportStaffByVacancy(idUniqueVacancy:string):Observable<SupportStaffByVacancyResponse[]> {
     return this.http.post<SupportStaffByVacancyResponse[]>(`${this.apiUrl}/support_staff_by_vacancy/`,{idunique_vacancy:idUniqueVacancy});
   }
@@ -68,4 +86,6 @@ export class VacancyService {
   addSupportStaff(data : AddSupportStaffRequest):Observable<SupportStaffByVacancyResponse> {
     return this.http.post<SupportStaffByVacancyResponse>(`${this.apiUrl}/support_staff/`,data);
   }
+
+
 }

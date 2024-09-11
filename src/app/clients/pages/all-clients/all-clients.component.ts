@@ -61,10 +61,6 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
 
   actionsItems : WritableSignal<ActionItem[]> = signal([
     {
-      actionDescription: 'Detalles',
-      icon : 'search'
-    },
-    {
       actionDescription: 'Vacantes',
       icon: 'people_outline'
     }
@@ -242,6 +238,8 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
   }
 
   goToVacanciesPerClient(client: Client) {
-    this.router.navigate( [`/vacancy/vacancies-per-client/${client.id}`]);
+    this.router.navigateByUrl('/vacancy/vacancies', { 
+      state: { clientId: client.id } 
+    });
   }
 }

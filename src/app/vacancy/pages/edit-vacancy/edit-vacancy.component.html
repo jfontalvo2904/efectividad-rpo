@@ -47,58 +47,63 @@
                
             </section>
 
-            <section class="flex justify-center mt-5" id="managers-table">
-                <div class="w-2/3">
-                    <shared-custom-table 
-                        [dataSource]="supportsByVacancy()" 
-                        [colums]="columsManagers" 
-                        [mapColum]="mapColum"
-                        [withPaginator]="true" 
-                        [withSort]="true" 
-                        [withFilter]="true"
-                        [withActions]="true"
-                        [withAddButton]="true"
-                        [addButtonOptons]="addButtonOptions"/>
-                </div>
-            </section>
+            @if(userRole()?.role_name && superRoles().includes(userRole()!.role_name)){
+                <section class="flex justify-center mt-5" id="managers-table">
+                    <div class="w-2/3">
+                        <shared-custom-table 
+                            [dataSource]="supportsByVacancy()" 
+                            [colums]="columsManagers" 
+                            [mapColum]="mapColum"
+                            [withPaginator]="true" 
+                            [withSort]="true" 
+                            [withFilter]="true"
+                            [withActions]="true"
+                            [withAddButton]="true"
+                            [addButtonOptons]="addButtonOptions"/>
+                    </div>
+                </section>
+            }
 
-            <section class="flex gap-2 mt-5 flex-wrap">
-                <mat-form-field floatLabel="always">
-                    <mat-label># de posiciones canceladas</mat-label>
-                    <input formControlName="cancelled" matInput >
-                </mat-form-field>
-                
-                <mat-form-field floatLabel="always">
-                    <mat-label># de posiciones suspendidas</mat-label>
-                    <input formControlName="suspended" matInput >
-                </mat-form-field>
-                <mat-form-field floatLabel="always">
-                    <mat-label># de vacantes cubiertas</mat-label>
-                    <input formControlName="filled" matInput>
-                </mat-form-field>
+            
 
-                <mat-form-field floatLabel="always">
-                    <mat-label># de vacantes cubiertas en tiempos</mat-label>
-                    <input formControlName="filled_on_time" matInput>
-                </mat-form-field>
-
-                <mat-form-field floatLabel="always">
-                    <mat-label># de vacantes cubiertas fuera de tiempo</mat-label>
-                    <input formControlName="filled_late" matInput>
-                </mat-form-field>
-                
-
-                <mat-form-field>
-                    <mat-label>Fecha de cierre</mat-label>
-                    <input matInput [matDatepicker]="picker3" formControlName="closing_date">
-                    <mat-hint>YYYY/MM/DD</mat-hint>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-                    <mat-datepicker #picker3></mat-datepicker>
-                </mat-form-field>
-
-            </section>
-
-
+            @if( userRole()?.role_name && !basicRoles().includes(userRole()!.role_name)) {
+                <section class="flex gap-2 mt-5 flex-wrap">
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de posiciones canceladas</mat-label>
+                        <input formControlName="cancelled" matInput >
+                    </mat-form-field>
+                    
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de posiciones suspendidas</mat-label>
+                        <input formControlName="suspended" matInput >
+                    </mat-form-field>
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de vacantes cubiertas</mat-label>
+                        <input formControlName="filled" matInput>
+                    </mat-form-field>
+    
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de vacantes cubiertas en tiempos</mat-label>
+                        <input formControlName="filled_on_time" matInput>
+                    </mat-form-field>
+    
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de vacantes cubiertas fuera de tiempo</mat-label>
+                        <input formControlName="filled_late" matInput>
+                    </mat-form-field>
+                    
+    
+                    <mat-form-field>
+                        <mat-label>Fecha de cierre</mat-label>
+                        <input matInput [matDatepicker]="picker3" formControlName="closing_date">
+                        <mat-hint>YYYY/MM/DD</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+    
+                </section>
+            }
+            
             <section class="flex gap-2 mt-5 flex-wrap">
                 
                 <mat-form-field floatLabel="always">

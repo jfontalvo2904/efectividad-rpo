@@ -1,9 +1,9 @@
-import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, OnInit, Signal, signal, WritableSignal } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDateFormats } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
@@ -35,6 +35,8 @@ import DataDialogAddSource from '../../interfaces/DataDialogAddSource.interface'
 import { AddSourceDialogComponent } from '../../components/add-source-dialog/add-source-dialog.component';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import UpdateVacancyRequest from '../../interfaces/UpdateVacancyRequest.interface';
+import Role from '../../../auth/interfaces/Role.interface';
+import UserRoleByClient from '../../../clients/interfaces/UserRoleByClient.interface';
 
 const MY_DATE_FORMATS: MatDateFormats = {
   parse: {
@@ -79,6 +81,7 @@ export class EditVacancyComponent implements OnInit {
   private clientService: ClientService = inject(ClientService);
 
   user: User | null;
+  userRole:WritableSignal<UserRoleByClient|null> = signal(null)
 
   selectLeaders:WritableSignal<SelectData[]> = signal([])
   supportsByVacancy: WritableSignal<SupportStaffByVacancyResponse[]> = signal([]);
@@ -88,6 +91,10 @@ export class EditVacancyComponent implements OnInit {
   selectSource: WritableSignal<SelectData[]> = signal([]);
 
   source: WritableSignal<Source| null> = signal(null);
+
+  superRoles = signal(['Consultor front', 'Consultor', 'Asistente 360']);
+  powerRoles = signal(['Consultor de apoyo']);
+  basicRoles = signal(['Asistente', 'Asistente de apoyo'])
   
   sources =computed(()=> {
     if(this.source()) {
@@ -98,7 +105,6 @@ export class EditVacancyComponent implements OnInit {
   });
 
   
-
   readonly dialog = inject(MatDialog);
 
   openDialogAddSupportStaff(supports: SupportStaffByClientResponse[]): void {
@@ -135,6 +141,8 @@ export class EditVacancyComponent implements OnInit {
   }
 
   constructor() {
+    this.user = this.authService.userValue;
+
     this.myForm = this.formBulder.group({
       client: [{value:'',disabled:true},[Validators.required]],
       name: [{value:'',disabled:true},[Validators.required]],
@@ -142,12 +150,6 @@ export class EditVacancyComponent implements OnInit {
       assignment_date:[{value:'',disabled:true},[Validators.required]],
       deadline:[{value:'',disabled:true},[Validators.required]],
       number_openings:[{value:null,disabled:true},[Validators.required]],
-      cancelled: [null,Validators.required],
-      suspended:[null,Validators.required],
-      filled:[null, Validators.required],
-      filled_on_time:[null,Validators.required],
-      filled_late:[null,Validators.required],
-      closing_date:[null],
       preselection: [null,Validators.required],
       successful_screening: [null,Validators.required],
       interviewed_consultant:[null,Validators.required],
@@ -155,9 +157,8 @@ export class EditVacancyComponent implements OnInit {
       approved_by_client:[null,Validators.required],
       approval_target:[null],
       observations:[null],
-
     })
-
+  
     this.activedRoute.paramMap.subscribe( paramMap  => {
       if(paramMap.get('id')) {
         this.vacancyId = Number(paramMap.get('id'));
@@ -168,10 +169,9 @@ export class EditVacancyComponent implements OnInit {
       }
     });
 
-    this.user = this.authService.userValue;
-
   }
   ngOnInit(): void {
+
     this.sharedService.isLoading.set(true);
 
     this.vacancyService.getVacanyById(this.vacancyId!)
@@ -179,8 +179,7 @@ export class EditVacancyComponent implements OnInit {
     .subscribe({
       next: vacancy => {
         this.vacancy = vacancy;
-        this.initForm();
-        this.getSources(this.vacancy.id)
+        this.setUserRole(this.user!.id, this.vacancy.client)
       },
       error: err => {
         CustomSwal.modalError("Algo salió mal", `No hemos podido obtener la vacante con id ${this.vacancyId}`);
@@ -215,14 +214,30 @@ export class EditVacancyComponent implements OnInit {
       CustomSwal.modalError("NO se ha podido iniciar el formulario", "Contacta con un administrador");
     }else {
 
-      this.vacancyService.allSupportStaffByVacancy(this.vacancy.idunique_vacancy).subscribe({
-        next: data =>{
-          this.supportsByVacancy.set(data);
-        },
-        error: err => {
-          console.log("No fue posible obtener los encargados de la vacante","Por favor notifique el error a un administrador");
-        }
-      });
+      if(this.superRoles().includes(this.userRole()!.role_name) || this.powerRoles().includes(this.userRole()!.role_name)) {
+      
+        this.myForm.addControl('cancelled', new FormControl(null, Validators.required));
+        this.myForm.addControl('suspended', new FormControl(null, Validators.required));
+        this.myForm.addControl('filled', new FormControl(null, Validators.required));
+        this.myForm.addControl('filled_on_time', new FormControl(null, Validators.required));
+        this.myForm.addControl('filled_late', new FormControl(null, Validators.required));
+        this.myForm.addControl('closing_date', new FormControl(null));
+      }
+
+      if( this.superRoles().includes(this.userRole()!.role_name)) {
+
+        this.vacancyService.allSupportStaffByVacancy(this.vacancy.idunique_vacancy).subscribe({
+          next: data =>{
+            this.supportsByVacancy.set(data);
+          },
+          error: err => {
+            console.log("No fue posible obtener los encargados de la vacante","Por favor notifique el error a un administrador");
+          }
+        });
+
+      }
+
+      
 
       this.vacancyService.getDeadLineByVacancy(this.vacancy.client,this.vacancy.assignment_date).subscribe({
         next: data => {
@@ -257,6 +272,22 @@ export class EditVacancyComponent implements OnInit {
 
   setForm(property:string, value: any): void {
     this.myForm.get(property)?.setValue(value);
+  }
+
+  setUserRole(userId:number, clientId:number) {
+    this.clientService.userRoleByClient(clientId,userId).subscribe({
+      next: roleByClient => {
+        this.userRole.set(roleByClient);
+        this.initForm();
+        this.getSources(this.vacancy!.id)
+      },
+      error: () => {
+        CustomSwal.modalError("No tienes un rol asignado con el cliente", "Serás redirigido en 3 segundos");
+        
+        setTimeout(()=>{this.router.navigate(["/vacancy/vacancies"]);},3000)
+        
+      }
+    })
   }
 
 
@@ -295,8 +326,6 @@ export class EditVacancyComponent implements OnInit {
       
      }
   }
-
-
 
 
   columsSources = ['source', 'value']
@@ -398,8 +427,9 @@ export class EditVacancyComponent implements OnInit {
       .pipe(finalize(()=>{this.sharedService.isLoading.set(false)}))
       .subscribe({
         next: data => {
-          CustomSwal.toast({title:"Se han guardado los datos correctametne", timer:2000})
-          console.log(data);
+          CustomSwal.toast({title:"Se han guardado los datos correctametne", timer:3000})
+          this.vacancy = data;
+          this.initForm();
         },
         error: ()=> {
           CustomSwal.modalError("Algo ha salido mal y no pudimos actualizar la vacante", "ponte en contacto con un administrador");

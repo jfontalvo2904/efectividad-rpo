@@ -5,11 +5,14 @@ import { VacancyService } from '../../services/vacancy/vacancy.service';
 import Vacancy from '../../interfaces/Vacancy.interface';
 import { Router } from '@angular/router';
 import CustomSwal from '../../../shared/utils/CustomSwal';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-vacancies',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent,MatButtonModule, MatTooltipModule,MatIconModule],
   templateUrl: './vacancies.component.html',
   styleUrl: './vacancies.component.css'
 })
@@ -19,6 +22,8 @@ export class VacanciesComponent implements OnInit {
   private router:Router = inject(Router);
 
   public vacancies = signal<Vacancy[]>([]);
+
+  public byClientId:number|null = null;
 
   public displayedColums: string[] = [
     "id",
@@ -49,13 +54,39 @@ export class VacanciesComponent implements OnInit {
     },
   ]
 
-  ngOnInit(): void {
-    this.vacancyService.getAll().subscribe({
-      next : data => {
-        this.setVacancyStatus(data);
-      }
-    })
+  constructor() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      this.byClientId = navigation.extras.state['clientId']
+    }
   }
+
+  ngOnInit(): void {
+    this.setData();  
+  }
+
+  setData() {
+    if(this.byClientId) {
+      this.vacancyService.getVacanciesPerClient(this.byClientId).subscribe({
+        next: data => {
+          this.setVacancyStatus(data);
+        }
+      });
+    }else{
+      this.vacancyService.getAll().subscribe({
+        next : data => {
+          this.setVacancyStatus(data);
+        }
+      })
+    }
+  }
+
+  showAll() {
+    this.byClientId = null;
+    this.setData();
+  }
+
+  
 
   setVacancyStatus(vacancies: Vacancy[]) {
     this.vacancyService.getAllVacancyStatus().subscribe({

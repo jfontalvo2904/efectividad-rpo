@@ -4,6 +4,7 @@ import { map, Observable, of, tap } from 'rxjs';
 import User from '../interfaces/User.interface';
 import LoginResponse from '../interfaces/LoginResponse.interface';
 import { environment } from '../../../environments/environment';
+import Role from '../interfaces/Role.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class AuthService {
   private readonly apiUrl: string  = `${environment.apiBaseUrl}/api/users`;
 
   private user: WritableSignal<User | null> = signal(null);
+
+  private roleUser: WritableSignal<Role | null> = signal(null)
   
   constructor() { }
 
@@ -30,6 +33,7 @@ export class AuthService {
           if(data.user && data.token) {
             this.saveTokenInCache(data.token);
             this.user.set(data.user);
+            this.getRoleUser(this.user()!.role_id)
           }
         }),
         map( loginResponse => loginResponse.user)
@@ -37,10 +41,24 @@ export class AuthService {
 
   }
 
+  getRoleUser(roleId: number| null) {
+    if(roleId) {
+      this.getRoleById(roleId).subscribe({
+        next: role => {
+          this.roleUser.set(role);
+        }
+      })
+    }
+  }
+
   saveTokenInCache(token:string): void {
     if(token) {
       localStorage.setItem('userToken', token); 
     }
+  }
+
+  get userRole(): Role | null {
+    return this.roleUser();
   }
 
   get userValue() {
@@ -76,7 +94,8 @@ export class AuthService {
 
   }
 
-  register() {
-
+  getRoleById(roleId:number):Observable<Role> {
+    return this.http.get<Role>(`${this.apiUrl}/roles/${roleId}/`)
   }
+
 }

@@ -37,8 +37,8 @@ export class VacancyService {
     return this.http.get<Vacancy[]>(this.apiUrl);
   }
 
-  updateVacancy(vacancyId:number,updateVacancyRequest:any):Observable<any> {
-    return this.http.put<Vacancy[]>(`${this.apiUrl}/${vacancyId}/`, updateVacancyRequest);
+  updateVacancy(vacancyId:number,updateVacancyRequest:any):Observable<Vacancy> {
+    return this.http.put<Vacancy>(`${this.apiUrl}/${vacancyId}/`, updateVacancyRequest);
   }
 
   getAllVacancyTypes(): Observable<VacancyType[]> {
@@ -51,8 +51,7 @@ export class VacancyService {
 
 
   getVacanciesPerClient(clientId: number) : Observable<Vacancy[]> {
-    
-    return of([]);
+    return this.http.get<Vacancy[]>(`${this.apiUrl}/client/${clientId}/`);
   }
 
   getDeadLineByVacancy(clientId:number,assignmentDate:string):Observable<DeadLineResponse>{

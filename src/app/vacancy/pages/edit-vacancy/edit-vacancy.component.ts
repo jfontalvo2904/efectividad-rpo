@@ -145,6 +145,8 @@ export class EditVacancyComponent implements OnInit {
 
     this.myForm = this.formBulder.group({
       client: [{value:'',disabled:true},[Validators.required]],
+      responsible_name: [{value:'',disabled:true},[Validators.required]],
+      role_responsible_name: [{value:'',disabled:true},[Validators.required]],
       name: [{value:'',disabled:true},[Validators.required]],
       leader: [{value:'',disabled:true},[Validators.required]],
       assignment_date:[{value:'',disabled:true},[Validators.required]],
@@ -221,7 +223,11 @@ export class EditVacancyComponent implements OnInit {
         this.myForm.addControl('filled', new FormControl(null, Validators.required));
         this.myForm.addControl('filled_on_time', new FormControl(null, Validators.required));
         this.myForm.addControl('filled_late', new FormControl(null, Validators.required));
+        this.myForm.addControl('open', new FormControl({value: null, disabled: true}, Validators.required));
+        this.myForm.addControl('lost', new FormControl({value: null, disabled: true}, Validators.required));
+        this.myForm.addControl('overcoverage', new FormControl({value: null, disabled: true}, Validators.required));
         this.myForm.addControl('closing_date', new FormControl(null));
+
       }
 
       if( this.superRoles().includes(this.userRole()!.role_name)) {
@@ -249,6 +255,8 @@ export class EditVacancyComponent implements OnInit {
       })
 
       this.setForm('client',this.vacancy.client);
+      this.setForm('responsible_name',this.vacancy.responsible_name);
+      this.setForm('role_responsible_name',this.vacancy.role_responsible_name);
       this.setForm('name',this.vacancy.name);
       this.setForm('leader',this.vacancy.leader_name)
       this.setForm('assignment_date',this.vacancy.assignment_date);
@@ -265,6 +273,9 @@ export class EditVacancyComponent implements OnInit {
       this.setForm('filled_late',this.vacancy.filled_late);
       this.setForm('filled_on_time',this.vacancy.filled_on_time)
       this.setForm('approval_target',this.vacancy.approval_target);
+      this.setForm('open',this.vacancy.open);
+      this.setForm('lost',this.vacancy.lost);
+      this.setForm('overcoverage',this.vacancy.overcoverage);
       this.setForm('closing_date',this.vacancy.closing_date);
 
     }
@@ -414,12 +425,15 @@ export class EditVacancyComponent implements OnInit {
       delete updateVacancyReques.overcoverage
       delete updateVacancyReques.vacancy_type_name
       delete updateVacancyReques.client_name
+      delete updateVacancyReques.responsible_name
+      delete updateVacancyReques.role_responsible_name
       delete updateVacancyReques.id
       delete updateVacancyReques.leader_name
       delete updateVacancyReques.responsible_name
       delete updateVacancyReques.role_responsible_name
       delete updateVacancyReques.sector_name
       delete updateVacancyReques.vacancy_type_name
+
 
       this.sharedService.isLoading.set(true);
 
@@ -440,6 +454,10 @@ export class EditVacancyComponent implements OnInit {
     }else{
       CustomSwal.modalError("Verifica tu formulario", "Los campos marcados con * son obligatorios");
     }
+  }
+
+  cancel() {
+    this.router.navigate(["/vacancy/vacancies"])
   }
 
   

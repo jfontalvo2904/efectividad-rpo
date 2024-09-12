@@ -13,6 +13,7 @@ export default interface Vacancy {
     filled_late:            number;
     open:                   number | null;
     lost:                   number | null;
+    overcoverage:           number | null;
     closing_date:           string | null;
     preselection:           number;
     successful_screening:   number;

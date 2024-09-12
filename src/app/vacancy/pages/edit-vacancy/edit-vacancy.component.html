@@ -9,9 +9,20 @@
                 
                 <mat-form-field floatLabel="always">
                     <mat-label>Cliente</mat-label>
-                    <input formControlName="client" [value]="vacancy?.client_name" matInput>
+                    <input formControlName="client" matInput>
                 </mat-form-field>
-                
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Responsable</mat-label>
+                    <input formControlName="responsible_name" matInput>
+                </mat-form-field>
+
+                <mat-form-field floatLabel="always">
+                    <mat-label>Rol del responsable</mat-label>
+                    <input formControlName="role_responsible_name" matInput>
+                </mat-form-field>
+
+              
                 <mat-form-field floatLabel="always">
                     <mat-label>Nombre de la vacante</mat-label>
                     <input formControlName="name" matInput>
@@ -91,6 +102,21 @@
                         <mat-label># de vacantes cubiertas fuera de tiempo</mat-label>
                         <input formControlName="filled_late" matInput>
                     </mat-form-field>
+
+                    <mat-form-field floatLabel="always">
+                        <mat-label>Total vacantes abiertas</mat-label>
+                        <input formControlName="open" matInput>
+                    </mat-form-field>
+
+                    <mat-form-field floatLabel="always">
+                        <mat-label># de vacantes perdidas</mat-label>
+                        <input formControlName="lost" matInput>
+                    </mat-form-field>
+
+                    <mat-form-field floatLabel="always">
+                        <mat-label>Sobrecubrimiento</mat-label>
+                        <input formControlName="overcoverage" matInput>
+                    </mat-form-field>
                     
     
                     <mat-form-field>
@@ -162,7 +188,7 @@
 
             <section>
                 <div class="flex justify-end mt-8 gap-4">
-                    <button mat-fab extended color="tertiary">
+                    <button (click)="cancel()" mat-fab extended color="tertiary">
                         <mat-icon>cancel</mat-icon>
                         Cancelar
                     </button>

@@ -79,11 +79,15 @@ export default class VacancyUtils {
         ];
     }
 
-    static sourceToSourceTableFormatList(sourceParam:Source):SourceTableFormat[]{
+    static sourceToSourceTableFormatList(sourceParam:Source):Source[]{
+
+        return [
+            sourceParam
+        ]
 
        //se modificará para que sea dinamico
 
-       return [
+       /*return [
             {
                 source: SourceKeys.busqueda_avature,
                 value: sourceParam.busqueda_avature
@@ -132,7 +136,7 @@ export default class VacancyUtils {
                 source: SourceKeys.otros,
                 value: sourceParam.otros
             }
-        ];
+        ];*/
     }
 
 }

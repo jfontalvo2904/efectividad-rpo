@@ -74,6 +74,10 @@ export class VacancyService {
     return this.http.get<Source>(`${this.apiUrl}/sources/${vacancyId}`);
   }
 
+  getVacanciesByResponsible(responsibleId: number):Observable<Vacancy[]> {
+    return this.http.get<Vacancy[]>(`${this.apiUrl}/responsible/${responsibleId}/`);
+  }
+
   updateSourceByVacancy(source:Source):Observable<Source>{
     return this.http.put<Source>(`${this.apiUrl}/sources/${source.vacancy}/`, source);
   }

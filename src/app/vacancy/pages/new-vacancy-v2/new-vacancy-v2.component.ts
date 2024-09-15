@@ -40,6 +40,7 @@ import { SharedService } from '../../../shared/shared.service';
 import { finalize, single } from 'rxjs';
 import { PickerManagePeriodoComponent } from "../../../shared/components/picker-manage-periodo/picker-manage-periodo.component";
 import CreateVacancy from '../../interfaces/CreateVacancy.interface';
+import { Router } from '@angular/router';
 
 
 const moment = _rollupMoment || _moment;
@@ -92,6 +93,7 @@ export class NewVacancyV2Component implements OnInit {
   private authService: AuthService = inject(AuthService);
   private formBuilder: FormBuilder = inject(FormBuilder);
   private sharedService:SharedService = inject(SharedService);
+  private router: Router = inject(Router);
 
   clients :WritableSignal<Client[] | null> = signal([]);
   user = computed(()=>this.authService.userValue);
@@ -123,7 +125,10 @@ export class NewVacancyV2Component implements OnInit {
     if(this.clientService.clientsValue){
       this.clients.set(this.clientService.clientsValue);
     }else{
-      this.clientService.getAll().subscribe({
+      this.sharedService.isLoading.set(true);
+      this.clientService.getAll()
+      .pipe(finalize(()=> {this.sharedService.isLoading.set(false)}))
+      .subscribe({
         next: data => {
           this.clients.set(data);
           this.selectClients.set(ClientUtils.selectClients(data));
@@ -244,8 +249,8 @@ export class NewVacancyV2Component implements OnInit {
 
     this.vacancyService.create(newVacancy).subscribe({
       next: data=> {
+        this.clearForm();
         CustomSwal.toast({title:"La vacante se ha creado de forma exitosa"});
-        this.cleanForm()
       },
       error: err => {
         CustomSwal.modalError("No hemos podido registrar la vacante", "Pongase en contacto con un administrador");
@@ -257,11 +262,22 @@ export class NewVacancyV2Component implements OnInit {
    }
   }
 
-  cleanForm(): void {
-    this.newVacancyForm.reset();
-    this.roleByClient.set(null);
-    this.newVacancyForm.markAsPristine();
-    this.newVacancyForm.markAsUntouched();
+  cancel(): void {
+    this.router.navigate(["/vacancy/vacancies"]);
+  }
+
+  
+
+  clearForm() {  
+    this.newVacancyForm.get('name')?.setValue('');
+    this.newVacancyForm.get('number_opening')?.reset();
+    this.newVacancyForm.get('assignment_date')?.reset();
+    this.newVacancyForm.get('management_periodo')?.setValue('');
+    this.newVacancyForm.get('sector_id')?.reset();
+    this.newVacancyForm.get('client')?.reset();
+    this.newVacancyForm.get('leader')?.reset();
+    this.newVacancyForm.get('vacancy_type')?.reset();
+    this.newVacancyForm.get('status')?.reset();
   }
 
 }

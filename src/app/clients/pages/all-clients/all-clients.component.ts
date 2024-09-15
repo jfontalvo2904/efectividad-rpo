@@ -55,8 +55,6 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
 
   readonly dialog = inject(MatDialog);
 
-  displayedColumns: string[] = ['id', 'nit', 'name', 'business_name', 'date_intro','ans_submission','ans_closing','is_active', 'actions'];
-
   public isLoading = signal<boolean>(false);
 
   actionsItems : WritableSignal<ActionItem[]> = signal([
@@ -91,17 +89,18 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
       );
     }
   }
+  displayedColumns: string[] = ['id', 'nit', 'name', 'business_name', 'date_intro','ans_submission','ans_closing','is_active', 'actions'];
   
   mapColum = {
     'id' : 'ID',
     'nit': 'NIT',
-    'name': 'NAME',
-    'business_name' : 'BUSINESS NAME',
-    'date_intro' : 'DATE INTRO',
-    'is_active' : 'STATE',
-    'ans_submission': 'ANS SUBMISSION',
-    'ans_closing' : 'ANS CLOSING',
-    'actions': 'ACTIONS'
+    'name': 'Nombre',
+    'business_name' : 'Razón social',
+    'date_intro' : 'Fecha de ingreso',
+    'is_active' : 'State',
+    'ans_submission': 'Ans de entrega',
+    'ans_closing' : 'Ans de cubrimiento',
+    'actions': 'Actions'
   }
 
 

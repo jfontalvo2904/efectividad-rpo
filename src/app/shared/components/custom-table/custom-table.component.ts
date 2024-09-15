@@ -36,6 +36,8 @@ export class CustomTableComponent implements AfterViewInit {
 
   data = input.required<any[]>({alias : 'dataSource'});
   colums = input.required<string[]>();
+  tableTopClasses = input<string[]>([]);
+  paginatorClasses = input<string[]>([])
   withPaginator = input<boolean>(false);
   withSort = input<boolean>(false);
   mapColum = input<any | null>(null);

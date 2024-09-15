@@ -1,4 +1,4 @@
-<div class="border px-4 pb-4">
+<div class="border px-4 pb-4 w-full">
     <div class="h-10 rounded-b-lg bg-mp-light-blue">
         <p>Actualizar vacante {{vacancy?.id}}</p>
     </div>
@@ -78,7 +78,7 @@
             
 
             @if( userRole()?.role_name && !basicRoles().includes(userRole()!.role_name)) {
-                <section class="flex gap-2 mt-5 flex-wrap">
+                <section class="flex gap-4 mt-5 flex-wrap">
                     <mat-form-field floatLabel="always">
                         <mat-label># de posiciones canceladas</mat-label>
                         <input formControlName="cancelled" matInput >
@@ -91,6 +91,9 @@
                     <mat-form-field floatLabel="always">
                         <mat-label># de vacantes cubiertas</mat-label>
                         <input formControlName="filled" matInput>
+                        @if( myForm && myForm.get('filled')?.hasError('sumMismatch')) {
+                            <mat-error>En tiempo + Fuera de tiempos = Cubiertas</mat-error>
+                        }
                     </mat-form-field>
     
                     <mat-form-field floatLabel="always">
@@ -99,7 +102,7 @@
                     </mat-form-field>
     
                     <mat-form-field floatLabel="always">
-                        <mat-label># de vacantes cubiertas fuera de tiempo</mat-label>
+                        <mat-label># Cubiertas fuera de tiempo</mat-label>
                         <input formControlName="filled_late" matInput>
                     </mat-form-field>
 
@@ -164,19 +167,22 @@
 
             </section>
 
-            <section class="flex justify-center mt-5" id="sources-table">
-                <div class="w-2/3">
-                    <shared-custom-table 
-                        [dataSource]="sources()" 
-                        [colums]="columsSources" 
-                        [mapColum]="mapColumSources"
-                        [withPaginator]="true" 
-                        [withSort]="true" 
-                        [withFilter]="true"
-                        [withActions]="true"
-                        [withAddButton]="true"
-                        [addButtonOptons]="addButtonOptionsSources"/>
-                </div>
+            
+
+            <section class="mt-5 overflow-x-scroll" id="sources-table">
+                <h3 class="text-lg font-bold mb-4 text-mp-light-blue">Fuentes</h3>
+                <shared-custom-table
+                [dataSource]="sources()"
+                [tableTopClasses]="['justify-around']"
+                [paginatorClasses]="['!flex','justify-center']"
+                [colums]="columsSources" 
+                [mapColum]="mapColumSources"
+                [withPaginator]="true" 
+                [withSort]="true" 
+                [withFilter]="true"
+                [withActions]="true"
+                [withAddButton]="true"
+                [addButtonOptons]="addButtonOptionsSources"/>
             </section>
 
             <section class="mt-5">

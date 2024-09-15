@@ -8,6 +8,8 @@ import CustomSwal from '../../../shared/utils/CustomSwal';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import User from '../../../auth/interfaces/User.interface';
+import { AuthService } from '../../../auth/service/auth.service';
 
 @Component({
   selector: 'app-vacancies',
@@ -19,7 +21,9 @@ import { MatIconModule } from '@angular/material/icon';
 export class VacanciesComponent implements OnInit {
 
   private vacancyService : VacancyService = inject(VacancyService);
+  private authService: AuthService = inject(AuthService);
   private router:Router = inject(Router);
+  private user: User|null;
 
   public vacancies = signal<Vacancy[]>([]);
 
@@ -40,9 +44,10 @@ export class VacanciesComponent implements OnInit {
   public mapColum = {
     'id' : 'ID',
     'name': 'Nombre de la vacante',
-    'availablePositions': '# Posiciones solicitadas',
+    "assignment_date" : "Fecha de asignación",
+    'number_openings': '# Posiciones solicitadas',
     'client_name': "Cliente",
-     "responsible_name": "Responsable",
+    "responsible_name": "Responsable",
     "management_periodo" : "Periodo de gestión",
     'dateAssignment': 'Fecha de asignación',
     'status_name': 'Estado',
@@ -63,6 +68,8 @@ export class VacanciesComponent implements OnInit {
     if (navigation?.extras.state) {
       this.byClientId = navigation.extras.state['clientId']
     }
+
+    this.user = this.authService.userValue
   }
 
   ngOnInit(): void {
@@ -73,15 +80,19 @@ export class VacanciesComponent implements OnInit {
     if(this.byClientId) {
       this.vacancyService.getVacanciesPerClient(this.byClientId).subscribe({
         next: data => {
-          this.setVacancyStatus(data);
+          let vacanciesFiltered = data.filter( vacancy => vacancy.responsible === this.user?.id)
+          this.setVacancyStatus(vacanciesFiltered);
         }
       });
     }else{
-      this.vacancyService.getAll().subscribe({
-        next : data => {
-          this.setVacancyStatus(data);
-        }
-      })
+      if(this.user?.id) {
+        this.vacancyService.getVacanciesByResponsible(this.user.id).subscribe({
+          next : data => {
+            this.setVacancyStatus(data);
+          }
+        })
+      }
+      
     }
   }
 

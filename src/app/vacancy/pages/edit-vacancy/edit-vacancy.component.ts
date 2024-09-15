@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDateFormats } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
@@ -159,7 +159,7 @@ export class EditVacancyComponent implements OnInit {
       approved_by_client:[null,Validators.required],
       approval_target:[null],
       observations:[null],
-    })
+    }, {validators: this.filledValidate})
   
     this.activedRoute.paramMap.subscribe( paramMap  => {
       if(paramMap.get('id')) {
@@ -199,6 +199,51 @@ export class EditVacancyComponent implements OnInit {
 
   }
 
+  formValueChange(controlName: string, value:any) {
+   
+    if(controlName === 'cancelled' || controlName === 'suspended') {
+      this.validateOpening(controlName);
+    }
+  }
+
+
+  validateOpening(controlName:string) {
+
+    if(controlName === 'cancelled' || controlName === 'suspended') {
+      let sum = Number(this.myForm.get('cancelled')!.value) + Number(this.myForm.get('suspended')!.value);
+
+      if(sum > this.myForm.get('number_openings')!.value ) {
+        this.setForm(controlName,0);
+        CustomSwal.modalError("Error", "La suma de posiciones canceladas + suspendidas no puede ser mayor al Número de posicones totales");
+      }
+
+    }
+  }
+
+  filledValidate:ValidatorFn = (abstractControl : AbstractControl) =>  {
+    const formGroup = abstractControl as FormGroup
+
+    if(formGroup) {
+      const filled = formGroup.get('filled');
+      const filled_on_time = formGroup.get('filled_on_time')
+      const filled_late = formGroup.get('filled_late')
+
+      let sum = Number(filled_late?.value) + Number(filled_on_time?.value);
+
+      if (Number(filled?.value) !== sum) {
+        filled?.setErrors({ sumMismatch: true });
+      } else {
+        // Si no hay error, asegúrate de limpiar el error anterior
+        if (filled?.hasError('sumMismatch')) {
+          filled.setErrors(null); // Limpia el error si ya no existe
+        }
+      }
+    }
+
+    return null;
+
+  }
+
   getSources(vacancyId:number): void {
     this.vacancyService.getSourceByVacancy(vacancyId).subscribe({
       next: data => {
@@ -227,6 +272,14 @@ export class EditVacancyComponent implements OnInit {
         this.myForm.addControl('lost', new FormControl({value: null, disabled: true}, Validators.required));
         this.myForm.addControl('overcoverage', new FormControl({value: null, disabled: true}, Validators.required));
         this.myForm.addControl('closing_date', new FormControl(null));
+
+        this.myForm.get('cancelled')?.valueChanges.subscribe((newValue) => {
+          this.formValueChange('cancelled',newValue)
+        });
+    
+        this.myForm.get('suspended')?.valueChanges.subscribe((newValue) => {
+          this.formValueChange('suspended',newValue)
+        });
 
       }
 
@@ -285,6 +338,9 @@ export class EditVacancyComponent implements OnInit {
     this.myForm.get(property)?.setValue(value);
   }
 
+  
+
+
   setUserRole(userId:number, clientId:number) {
     this.clientService.userRoleByClient(clientId,userId).subscribe({
       next: roleByClient => {
@@ -339,16 +395,38 @@ export class EditVacancyComponent implements OnInit {
   }
 
 
-  columsSources = ['source', 'value']
+  columsSources = [
+    'busqueda_avature',
+    'computrabajo',
+    'convocatoria',
+    'correo',
+    'el_empleo',
+    'facebook',
+    'instagram',
+    'landing_page',
+    'linkedIn',
+    'otros',
+    'pandape',
+    'referido',
+  ]
 
   mapColumSources = {
-    'source': 'Fuente',
-    'value': '# de candidatos'
+    'busqueda_avature' : 'Busqueda avature',
+    'computrabajo' : 'Computrabajo',
+    'convocatoria' : 'Convocatoria',
+    'correo' : 'Correo',
+    'el_empleo' : 'El empleo',
+    'facebook' : 'Facebook',
+    'instagram' : 'Instagram',
+    'landing_page': 'Landing page',
+    'linkedIn' : 'Linkedin',
+    'otros' : 'Otros',
+    'pandape': 'Pandape',
+    'referido' : 'Referido',
   }
 
   addButtonOptionsSources:CustomTableAddButtonOptions = {
-    tooltipDescription: "Añadir Fuente",
-    tooltipPosition : "above",
+    description: "Añadir fuente",
     fontIcon:"add",
     handleFunction: ()=> { 
       this.openDialogAddSource()

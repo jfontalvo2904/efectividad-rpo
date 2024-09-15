@@ -14,6 +14,8 @@ import VacancyUtils from '../../utils/VacancyUtils';
 import { MatDateFormats } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import moment from 'moment';
+import Role from '../../../auth/interfaces/Role.interface';
+import UserUtils from '../../../auth/utils/UserUtils';
 
 const MY_DATE_FORMATS: MatDateFormats = {
   parse: {
@@ -53,12 +55,15 @@ export class AddSupportStaffDialogComponent {
   private formBuilder: FormBuilder = inject(FormBuilder);
 
   public selectSupports: WritableSignal<SelectData[]> = signal([]);
+  public selectSupportRoles: WritableSignal<SelectData[]> = signal([]);
   currentRoleName = signal('');
   addSupportForm:FormGroup;
 
   constructor() {
     this.selectSupports
     .set(VacancyUtils.selectSupportStaffByClientResponse(this.data.supports));
+
+    this.selectSupportRoles.set(UserUtils.selectRoles(this.data.supportRoles));
 
     this.addSupportForm = this.formBuilder.group({
       responsible: [null,[Validators.required]],
@@ -68,17 +73,6 @@ export class AddSupportStaffDialogComponent {
       assignment_date: [this.data.vacancy.assignment_date,[Validators.required]]
     })
   }
-
-  changeSelectSupport(supportId:number) {
-    let support = this.data.supports.find( supp => supp.user === supportId);
-    if(support) {
-      this.addSupportForm.get('role_responsible')?.setValue(support.role);
-      this.currentRoleName.set(support.role_name);
-    }else{
-      this.currentRoleName.set('');
-    }
-  }
-
 
   onNoClick(): void {
     this.dialogRef.close();

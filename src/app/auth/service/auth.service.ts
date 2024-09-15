@@ -98,4 +98,8 @@ export class AuthService {
     return this.http.get<Role>(`${this.apiUrl}/roles/${roleId}/`)
   }
 
+  getRolesSupports():Observable<Role[]> {
+    return this.http.get<Role[]>(`${this.apiUrl}/roles/supports/`);
+  }
+
 }

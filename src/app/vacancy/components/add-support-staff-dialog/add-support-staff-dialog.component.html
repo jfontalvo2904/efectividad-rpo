@@ -7,35 +7,47 @@
             <div class="flex flex-col gap-2 flex-wrap">
                 
                 <mat-form-field>
-                    <mat-label>Responsible</mat-label>
-                    <mat-select name="responsible" formControlName="responsible" (valueChange)="changeSelectSupport($event)">
+                    <mat-label>Responsable</mat-label>
+                    <mat-select name="responsible" formControlName="responsible">
                         @for (support of selectSupports(); track support) {
                             <mat-option [value]="support.value">{{support.viewValue}}</mat-option>
                         }
                     </mat-select>
-                    <mat-hint> <span class="text-base">Role: {{currentRoleName()}}</span></mat-hint>
                 </mat-form-field>
                 
                 <mat-form-field>
-                    <mat-label>Approval target</mat-label>
+                    <mat-label>Meta de aprobación</mat-label>
                     <input formControlName="approval_target" matInput>
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-label>Number openings</mat-label>
+                    <mat-label>Posiciones asignadas</mat-label>
                     <input formControlName="number_openings" matInput>
                 </mat-form-field>
 
+                
+            </div>
+
+            <div class="flex flex-col gap-2 flex-wrap">
                 <mat-form-field>
-                    <mat-label>Assignment date</mat-label>
+                    <mat-label>Rol</mat-label>
+                    <mat-select name="role" formControlName="role_responsible">
+                        @for (role of selectSupportRoles(); track role) {
+                            <mat-option [value]="role.value">{{role.viewValue}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Fecha de asignación</mat-label>
                     <input matInput [matDatepicker]="picker1" formControlName="assignment_date">
                     <mat-hint>YYYY/MM/DD</mat-hint>
                     <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
                     <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
 
-               
-              </div>
+            </div>
+
     
         </div>
     </form>

@@ -2,18 +2,7 @@
     <img id="image-side" src="../../../../assets/images/side-nueva-vacante-logo.png" alt="ManPowerGroupImage" >
     
     <section class="w-full pl-4">
-        <h1 class="text-4xl font-extrabold dark:text-white mb-6">Nueva vacante</h1>
-        
-        <!-- <div class="mb-4">
-            <button mat-raised-button
-                matTooltip="Añadir encargados"
-                matTooltipPosition="above"
-                aria-label="Button that displays a tooltip when focused or hovered over"
-                (click)="openDialog()"
-                >
-                <mat-icon>add</mat-icon>
-            </button>
-        </div> -->
+        <h1 class="text-4xl font-extrabold dark:text-white mb-6 text-mp-primary">Nueva vacante</h1>
         
         <form [formGroup]="newVacancyForm" class="flex gap-4">
             <div class="flex flex-col">
@@ -55,11 +44,11 @@
                 </mat-form-field>
                 
                 <div class="flex justify-start mt-8 gap-4">
-                    <button (click)="cancel()" mat-fab extended color="tertiary">
+                    <button (click)="cancel()" mat-fab extended color="warn">
                         <mat-icon>cancel</mat-icon>
                         Cancelar
                     </button>
-                    <button mat-fab extended color="tertiary" 
+                    <button mat-fab extended color="accent" 
                     [disabled]="roleByClient() ? !['Consultor front', 'Consultor', 'Asistente 360'].includes(roleByClient()!.role_name) : true" (click)="addVacancy()">
                         <mat-icon>save</mat-icon>
                         Aceptar
@@ -75,7 +64,7 @@
                     <input disabled matInput [value]="user()?.name">
                     <input hidden [value]="user()?.id" formControlName="responsible">
                     @if(roleByClient()){
-                        <span class="bg-mp-light-blue p-1 rounded-xl text-sm">{{roleByClient()?.role_name}}</span>
+                        <span class="bg-mp-primary p-1 rounded-xl text-sm">{{roleByClient()?.role_name}}</span>
                     }
                 </mat-form-field>
     

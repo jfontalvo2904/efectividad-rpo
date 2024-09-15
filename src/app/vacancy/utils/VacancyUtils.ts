@@ -84,59 +84,6 @@ export default class VacancyUtils {
         return [
             sourceParam
         ]
-
-       //se modificará para que sea dinamico
-
-       /*return [
-            {
-                source: SourceKeys.busqueda_avature,
-                value: sourceParam.busqueda_avature
-            },
-            {
-                source: SourceKeys.computrabajo,
-                value: sourceParam.computrabajo
-            },
-            {
-                source: SourceKeys.convocatoria,
-                value: sourceParam.convocatoria
-            },
-            {
-                source: SourceKeys.correo,
-                value: sourceParam.correo
-            },
-            {
-                source: SourceKeys.el_empleo,
-                value: sourceParam.el_empleo
-            },
-            {
-                source: SourceKeys.facebook,
-                value: sourceParam.facebook
-            },
-            {
-                source: SourceKeys.instagram,
-                value: sourceParam.instagram
-            },
-            {
-                source: SourceKeys.landing_page,
-                value: sourceParam.landing_page
-            },
-            {
-                source: SourceKeys.linkedIn,
-                value: sourceParam.linkedIn
-            },
-            {
-                source: SourceKeys.pandape,
-                value: sourceParam.pandape
-            },
-            {
-                source: SourceKeys.referido,
-                value: sourceParam.referido
-            },
-            {
-                source: SourceKeys.otros,
-                value: sourceParam.otros
-            }
-        ];*/
     }
 
 }

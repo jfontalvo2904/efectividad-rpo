@@ -5,12 +5,13 @@ import User from '../../interfaces/User.interface';
 import { LoadingModalComponent } from '../../../shared/components/loading-modal/loading-modal.component';
 import { Router } from '@angular/router';
 import CustomSwal from '../../../shared/utils/CustomSwal';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule,ReactiveFormsModule, LoadingModalComponent],
+  imports: [FormsModule,ReactiveFormsModule, LoadingModalComponent,MatButtonModule,],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

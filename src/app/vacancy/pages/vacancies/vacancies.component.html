@@ -1,6 +1,6 @@
 <div class="m-4">
     <div class="mb-6">
-      <h1 class="text-4xl font-extrabold dark:text-white">Vacantes {{byClientId ? "cliente " + byClientId : ""}}</h1>
+      <h1 class="text-4xl font-extrabold dark:text-white text-mp-primary">Vacantes {{byClientId ? "cliente " + byClientId : ""}}</h1>
       @if (byClientId) {
         <button (click)="showAll()"
           color="basic"

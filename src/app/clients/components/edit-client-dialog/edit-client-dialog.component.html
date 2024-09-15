@@ -11,15 +11,15 @@
                 </mat-form-field>
                 
                 <mat-form-field>
-                    <mat-label>Name</mat-label>
+                    <mat-label>Nombre</mat-label>
                     <input formControlName="name" matInput placeholder="Name">
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label>Business name</mat-label>
+                    <mat-label>Razón social</mat-label>
                     <input formControlName="businessName" matInput placeholder="Business name">
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label>Date Intro</mat-label>
+                    <mat-label>Fecha de ingreso</mat-label>
                     <input matInput [matDatepicker]="picker1" formControlName="dateIntro">
                     <mat-hint>YYYY/MM/DD</mat-hint>
                     <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -32,11 +32,11 @@
               <div class="flex flex-col gap-2 flex-wrap">
             
                 <mat-form-field>
-                    <mat-label>Ans Submission</mat-label>
+                    <mat-label>Ans de entrega</mat-label>
                     <input formControlName="ansSubmission" matInput placeholder="Ans submission">
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label>Ans closing</mat-label>
+                    <mat-label>Ans de cubrimiento</mat-label>
                     <input formControlName="ansClosing" matInput placeholder="Ans closing">
                 </mat-form-field>
                 <div class="flex justify-center items-center h-8">

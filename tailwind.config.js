@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors : {
-        'mp-orange' : '#c25917',
-        'mp-light-blue' : '#4d7baf',
-        'mp-blue' : '#396097'
+        'mp-warn' : '#c15701',
+        'mp-primary' : '#396097',
+        'mp-accent' : '#5c7e70'
       }
     },
   },

@@ -65,9 +65,8 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
   ])
 
   addButtonOptions:CustomTableAddButtonOptions = {
-    tooltipDescription: "Añadir",
-    tooltipPosition : "above",
     fontIcon:"add",
+    description: "Añadir cliente",
     handleFunction: ()=> { this.openDialogCreateClient() }
   }
 
@@ -97,10 +96,10 @@ export class AllClientsComponent implements AfterViewInit, OnInit  {
     'name': 'Nombre',
     'business_name' : 'Razón social',
     'date_intro' : 'Fecha de ingreso',
-    'is_active' : 'State',
+    'is_active' : 'Estado',
     'ans_submission': 'Ans de entrega',
     'ans_closing' : 'Ans de cubrimiento',
-    'actions': 'Actions'
+    'actions': 'Acciones'
   }
 
 

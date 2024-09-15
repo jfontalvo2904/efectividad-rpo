@@ -107,11 +107,12 @@ export class EditVacancyComponent implements OnInit {
   
   readonly dialog = inject(MatDialog);
 
-  openDialogAddSupportStaff(supports: SupportStaffByClientResponse[]): void {
+  openDialogAddSupportStaff(supports: SupportStaffByClientResponse[], supportRoles:Role[]): void {
     
     const dialogData : DataDialogAddSupportStaff = {
       title : 'Añadir encargados',
       supports,
+      supportRoles,
       vacancy: this.vacancy!,
     }
 
@@ -376,22 +377,37 @@ export class EditVacancyComponent implements OnInit {
   }
 
   addButtonOptions:CustomTableAddButtonOptions = {
-    tooltipDescription: "Añadir Encargado",
-    tooltipPosition : "above",
     fontIcon:"add",
+    description: "Añadir encargado",
     handleFunction: ()=> { 
       if(this.vacancy) {
-        this.clientService.getAllSupportStaffByClient(this.vacancy.client).subscribe({
-          next: supports => {
-            this.openDialogAddSupportStaff(supports);
-          },
-          error: () => {
-            CustomSwal.modalError("No es posible obtener los support staff para el cliente","Contacta con un administrador");
-          }
-        })
+        this.allSupportStaffByClient(this.vacancy.client)
       }
       
      }
+  }
+
+  allSupportStaffByClient(clientId:number): void {
+    this.clientService.getAllSupportStaffByClient(clientId).subscribe({
+      next: supports => {
+        this.supportRolesForOpenModal(supports)
+      },
+      error: () => {
+        CustomSwal.modalError("No es posible obtener los support staff para el cliente","Debido a esto no podemos asignar supports en este momento");
+      }
+    })
+  }
+
+  supportRolesForOpenModal(supports:SupportStaffByClientResponse[]) {
+    this.authService.getRolesSupports().subscribe({
+      next: roles => {
+        this.openDialogAddSupportStaff(supports, roles);
+      },
+      error: err => {
+        CustomSwal.modalError("No pudemos obtener los roles para los supports", "Debido a esto es imposible asignar un support actualmente");
+      }
+    })
+    
   }
 
 
